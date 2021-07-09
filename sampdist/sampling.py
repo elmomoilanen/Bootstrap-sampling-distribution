@@ -93,7 +93,7 @@ class SampDist:
     >>> from sampdist import SampDist
     >>> from sampdist.statistics import corr_pearson
     >>> samp = SampDist(corr_pearson) # use default alpha 95 and not smoothed bootstrap
-    >>> samp.estimate(X[:, :2]) # estimate sampling distribution for columns 0 and 1
+    >>> samp.estimate(X[:, :2], multid=True) # estimate sampling distribution of linear correlation for columns 0 and 1
     >>> samp.se, samp.ci # access the computed standard error and BCa confidence interval
     >>> samp.plot()
 
