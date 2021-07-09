@@ -35,3 +35,18 @@ After necessary module imports, a custom quantile function was defined which cal
 
 ![](docs/boostrap_distribution_quantile.png)
 
+As an other example, let's consider the sampling distribution estimation process for a multidimensional statistic, namely Pearson's linear correlation. Keeping the previously mentioned assumptions regarding the data X, the following code estimates the sampling distribution and in the final row, renders the histogram plot similarly to the figure above.
+
+```python
+# import custom implementation of Pearson's correlation from statistics module
+from sampdist.statistics import corr_pearson
+
+samp = SampDist(corr_pearson)
+samp.estimate(X[:, :2], multid=True) # multid must be set to True
+
+samp.plot()
+```
+
+![](docs/bootstrap_distribution_corr.png)
+
+To wrap up this section, for one-dimensional statistics (takes one column/attribute of the data as an input and produce single output) this library is quite convenient to use but unfortunately, for multidimensional statistics like correlation (take k columns as input and produce single output, in particular k=2 for correlation) usage is little tricky as one is required to implement functions to take data in higher-dimensional format (e.g. in 3d for correlation). Please take a look at the statistics module to see the implementation of Pearson's correlation and of course the code related to bootstrap estimation in sampling module.
