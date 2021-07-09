@@ -6,13 +6,15 @@ Generally speaking, in statistical inference the primary aspect is to quantify t
 
 ## Installation ##
 
-Python and poetry (package and dependency manager for Python) are prerequisites for successful installation. For independent usage, after cloning and navigating to the target folder, run the command `poetry install` to complete installation and create a virtual environment for the library. Unit tests can be run by the command `poetry run pytest`.
+Python and poetry (package and dependency manager for Python) are prerequisites for successful installation. For independent usage, after cloning and navigating to the target folder, run the command `poetry install` in order to complete installation and create a virtual environment for the library. Unit tests can be run by the command `poetry run pytest`.
 
 ## Usage ##
 
 This section provides two short examples for usage of the library and by any means they should not be considered as giving a complete guide of inner parts of the library. Instead one is adviced to read the docstring of `SampDist` class prior usage.
 
 Consider first the following example, where we assume X to be a numerical data with shape N x P (N observations and P attributes) and 10-quantile be the statistic of interest. Let's further assume that for the data P is equal to or larger than three.
+
+If needed, run the command `poetry shell` to activate the virtual environment related to this library.
 
 ```python
 import numpy as np
