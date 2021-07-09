@@ -1,13 +1,11 @@
 """Tests for few statistical functions implemented in `statistics` module."""
-import sys
-from pathlib import Path
 from math import isclose
 
 import numpy as np
 import pytest
 from scipy.stats import pearsonr
 
-sys.path.append(str(Path(__file__).parent.parent.resolve()))
+import sampdist
 
 from sampdist.statistics import (
     trimmed_mean_factory,

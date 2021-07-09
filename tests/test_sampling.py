@@ -1,13 +1,10 @@
 """Tests for SampDist class."""
-import sys
-from pathlib import Path
 from math import isclose
 
 import numpy as np
 import pytest
 
-sys.path.append(str(Path(__file__).parent.parent.resolve()))
-
+import sampdist
 from sampdist import SampDist
 
 from sampdist.statistics import (
