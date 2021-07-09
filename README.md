@@ -18,17 +18,20 @@ Consider first the following example, where we assume X to be a numerical data w
 import numpy as np
 from sampdist import SampDist
 
-def quantile(x): return np.quantile(x, q=0.1, axis=1) # library requires one-dimensional statistics to be defined with axis=1
+# library requires one-dimensional statistics to be defined with axis=1
+def quantile(x): return np.quantile(x, q=0.1, axis=1)
 
 samp = SampDist(quantile, alpha=99, smooth_bootstrap=True) # provide values for kwargs alpha and smooth_bootstrap
-samp.estimate(X[:, [0,2]]) # estimate sampling distribution simultaneously for columns 0 and 2 of the data
-# now samp.b_stats, samp.se and samp.ci are available for usage
+
+# estimate sampling distribution simultaneously for columns 0 and 2 of the data (column indices run from 0 to P-1)
+samp.estimate(X[:, [0,2]])
+
+# now samp.b_stats, samp.se and samp.ci are available for usage, they can be inspected also from a figure
 
 samp.plot(column=0) # plot the sampling distribution for first column (se and ci will be included)
-samp.plot(column=1)
 ```
 
-After necessary module imports, a custom quantile function was defined which calls NumPy's quantile routine notably with axis parameter set to one. Lastly, after an object of the `SampDist` class has been instantiated, the estimate method was called to compute the sampling distribution, standard error and BCa confidence interval that can then be plotted by the plot method.
+After necessary module imports, a custom quantile function was defined which calls NumPy's quantile routine notably with axis parameter set to one. Lastly, after an object of the `SampDist` class has been instantiated, the estimate method was called to compute the sampling distribution, standard error and BCa confidence interval that can then be plotted by the plot method. Following figure is a result of the plot call. In addition to the histogram (sampling distribution) it shows the observed value (value of the statistic in original data), standard error and BCa confidence interval highlighted in red.
 
-
+![](docs/boostrap_distribution_quantile.png)
 
