@@ -6,7 +6,7 @@ Generally speaking, in statistical inference the primary aspect is to quantify t
 
 ## Installation ##
 
-To be added.
+Python and poetry (package and dependency manager for Python) are prerequisites for successful installation. For independent usage, after cloning and navigating to the target folder, run the command `poetry install` to complete installation and create a virtual environment for the library. Unit tests can be run by the command `poetry run pytest`.
 
 ## Usage ##
 
