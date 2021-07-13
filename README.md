@@ -6,38 +6,40 @@ Generally speaking, in statistical inference the primary interest is to quantify
 
 ## Installation ##
 
-Python and poetry (package and dependency manager for Python) are prerequisites for a successful installation. For independent usage, after cloning and navigating to the target folder, run the command `poetry install` in order to create an own virtual environment for the library and install required third-party dependencies (such as NumPy) inside it. Unit tests can be run by the command `poetry run pytest`.
+Python and poetry (package and dependency manager for Python) are prerequisites for a successful installation. For independent usage, after cloning and navigating to the target folder, run the command `poetry install` in order to create a separate virtual environment for the library and install required third-party dependencies (such as NumPy) inside it. Unit tests can be run by the command `poetry run pytest`.
 
 ## Usage ##
 
-This section provides two short examples for usage of the library and by any means they should not be considered as giving a complete guide of inner parts of the library. Instead one is adviced to read the docstring of `SampDist` class prior usage.
+This section provides two short examples for usage of the library and by any means they should not be considered as giving a complete guide of public interfaces or especially inner parts of the library. One is adviced to read the docstring of `SampDist` class in sampling module prior to usage.
 
-Consider first the following example, where we assume X to be a numerical data with shape N x P (N observations and P attributes) and 10-quantile be the statistic of interest. Let's further assume that for the data P is equal to or larger than three.
-
-If needed, run the command `poetry shell` to activate the virtual environment related to this library.
+Let's consider first the following example, where we assume X to be a numerical data with shape N x P (N observations, P attributes) and 10-quantile be the statistic of interest. Let's further assume that the number of attributes P is equal to or larger than three.
 
 ```python
 import numpy as np
 from sampdist import SampDist
 
-# library requires one-dimensional statistics to be defined with axis=1
+# one-dimensional statistics must be defined with axis=1
 def quantile(x): return np.quantile(x, q=0.1, axis=1)
 
-samp = SampDist(quantile, alpha=99, smooth_bootstrap=True) # provide values for kwargs alpha and smooth_bootstrap
+samp = SampDist(quantile, alpha=99, smooth_bootstrap=True)
 
 # estimate sampling distribution simultaneously for columns 0 and 2 of the data (column indices run from 0 to P-1)
 samp.estimate(X[:, [0,2]])
 
-# now samp.b_stats, samp.se and samp.ci are available for usage, they can be inspected also from a figure
+# now samp.b_stats, samp.se and samp.ci are available but can also be inspected from a figure which we will do
 
 samp.plot(column=0) # plot the sampling distribution for first column (se and ci will be included)
+
+# samp.plot(columns=1) would plot the other column
 ```
 
-After necessary module imports, a custom quantile function was defined which calls NumPy's quantile routine notably with axis parameter set to one. Lastly, after an object of the `SampDist` class has been instantiated, the estimate method was called to compute the sampling distribution, standard error and BCa confidence interval that can then be plotted by the plot method. Following figure is a result of the plot call. In addition to the histogram (sampling distribution) it shows the observed value (value of the statistic in original data), standard error and BCa confidence interval highlighted in red.
+After necessary module imports, a custom quantile function was defined which calls NumPy's quantile routine notably with axis parameter set to one. Statistics module of this library has also a quantile function implementation but for the sake of demonstration we defined it here directly. Lastly, after an object of the `SampDist` class has been instantiated, estimate method of the class was called to compute the sampling distribution, standard error and BCa confidence interval that can then be plotted by the plot method. Notice how we passed a data slice of shape N x 2 to the estimate method and as the statistic is one-dimensional (requires input data in format N x 1 to produce one result) it makes the estimation simultaneously for both of the two attributes but of course the results do not have any interdependence.
+
+Following figure is a result of the plot call. In addition to the histogram (sampling distribution) it shows the observed value (value of the statistic in original data) pointed by the black arrow, standard error and lastly BCa confidence interval highlighted at the upper right corner of the figure and pointed by red arrows on x-axis.
 
 ![](docs/boostrap_distribution_quantile.png)
 
-As an other example, let's consider the sampling distribution estimation process for a multidimensional statistic, namely Pearson's linear correlation. Keeping the previously mentioned assumptions regarding the data X, the following code estimates the sampling distribution and in the final row, renders the histogram plot similarly to the figure above.
+As an other example, let's consider the sampling distribution estimation process for a multidimensional statistic, namely Pearson's linear correlation. Keeping the previously mentioned assumptions regarding the data X, the following code estimates the sampling distribution and in the final row, renders the histogram plot similarly to the figure above. Compared to the previous example, notice the difference in estimation process of the chosen statistic. Here the multidimensional statistic, Pearson's correlation, requires two attributes of data X as input (more precisely data slice with shape N x 2) and produces a single output which is the value of correlation. 
 
 ```python
 # import custom implementation of Pearson's correlation from statistics module
@@ -51,4 +53,4 @@ samp.plot()
 
 ![](docs/bootstrap_distribution_corr.png)
 
-To wrap up this section, for one-dimensional statistics (takes one column/attribute of the data as an input and produce single output) this library is quite convenient to use but unfortunately, for multidimensional statistics like correlation (take k columns as input and produce single output, in particular k=2 for correlation) usage is little tricky as one is required to implement functions to take data in higher-dimensional format (e.g. in 3d for correlation). Please take a look at the statistics module to see the implementation of Pearson's correlation and of course the code related to bootstrap estimation in sampling module.
+To wrap up this section, for one-dimensional statistics (take one column/attribute of the data as an input and produce one output) this library is quite convenient to use but unfortunately, for multidimensional statistics like correlation (take k columns as input and produce single output, in particular k=2 for correlation) usage is a bit trickier as one is required to implement functions to take data in higher-dimensional format (e.g. in 3d format for correlation). Please take a look at the statistics module to see the implementation of Pearson's correlation and of course the code related to bootstrap estimation in sampling module.
