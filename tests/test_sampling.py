@@ -1,4 +1,4 @@
-"""Tests for SampDist class."""
+"""Tests for `SampDist` class."""
 from math import isclose
 
 import numpy as np
@@ -9,8 +9,8 @@ from sampdist import SampDist
 
 from sampdist.statistics import (
     mean,
-    geom_mean,
-    harm_mean,
+    geometric_mean,
+    harmonic_mean,
     trimmed_mean_factory,
     median,
     maximum,
@@ -19,16 +19,17 @@ from sampdist.statistics import (
     kurtosis,
     interquartile_range,
     standard_deviation,
-    median_abs_dev,
+    median_absolute_deviation,
     quantile_factory,
     corr_pearson,
+    corr_spearman,
 )
 
 # all one dimensional statistics except those behind factory function
 all_one_dim_statistics = (
     mean,
-    geom_mean,
-    harm_mean,
+    geometric_mean,
+    harmonic_mean,
     median,
     maximum,
     minimum,
@@ -36,10 +37,10 @@ all_one_dim_statistics = (
     kurtosis,
     interquartile_range,
     standard_deviation,
-    median_abs_dev,
+    median_absolute_deviation,
 )
 
-all_multi_dim_statistics = (corr_pearson,)
+all_multi_dim_statistics = (corr_pearson, corr_spearman)
 
 
 def test_setting_statistic_property():

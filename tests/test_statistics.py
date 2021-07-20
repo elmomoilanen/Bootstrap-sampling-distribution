@@ -3,7 +3,7 @@ from math import isclose
 
 import numpy as np
 import pytest
-from scipy.stats import pearsonr
+from scipy.stats import pearsonr, spearmanr
 
 import sampdist
 
@@ -11,7 +11,10 @@ from sampdist.statistics import (
     trimmed_mean_factory,
     quantile_factory,
     corr_pearson,
+    corr_spearman,
 )
+
+rg = np.random.default_rng()
 
 
 def test_trimmed_mean():
@@ -73,3 +76,38 @@ def test_pearson_corr_no_linear_correlation():
         corr_pearson(X[np.newaxis, :, :]),
         abs_tol=0.000000001,
     )
+
+
+def test_pearson_corr_return_shape():
+    result_corr_values = 5
+    x = rg.normal(size=(result_corr_values, 10, 2))
+
+    assert corr_pearson(x).size == result_corr_values
+
+
+def test_spearman_corr():
+    X = np.array([[-1, 1], [0, 0], [1, -1]])
+
+    assert isclose(
+        spearmanr(X[:, 0], X[:, 1])[0],
+        corr_spearman(X[np.newaxis, :, :]),
+        abs_tol=0.0000001,
+    )
+
+
+def test_spearman_corr_other():
+    a = np.arange(50)
+    X = np.column_stack((a, a[::-1]))
+
+    assert isclose(
+        spearmanr(X[:, 0], X[:, 1])[0],
+        corr_spearman(X[np.newaxis, :, :]),
+        abs_tol=0.0000001,
+    )
+
+
+def test_spearman_corr_return_shape():
+    result_corr_values = 5
+    x = rg.normal(size=(result_corr_values, 10, 2))
+
+    assert corr_spearman(x).size == result_corr_values
