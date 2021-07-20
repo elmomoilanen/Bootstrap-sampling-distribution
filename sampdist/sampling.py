@@ -1,4 +1,4 @@
-"""Implements sampling distribution class."""
+"""Implements sampling distribution functionality."""
 import logging
 from typing import Union
 
@@ -40,7 +40,7 @@ class SampDist:
         Passed 1d functions must be defined with axis == 1, i.e. they must operate row-wise.
         Multi-dimensional case is more complicated as these functions must accept 3d tensor-kind
         inputs, please look at the Example section below for further advice. Also the `statistics`
-        module contains few examples, e.g. pearson correlation function.
+        module contains few examples, e.g. Pearson and Spearman's correlations.
 
     Kwargs
     ------
