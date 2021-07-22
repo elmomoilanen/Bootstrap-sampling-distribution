@@ -44,7 +44,7 @@ As an other example, let's consider the sampling distribution estimation process
 ```python
 from sampdist import SampDist
 
-# import custom implementation of Pearson's correlation from statistics module
+# import custom implementation of Pearson's correlation
 from sampdist import corr_pearson
 
 samp = SampDist(corr_pearson)
