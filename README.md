@@ -42,8 +42,10 @@ Following figure is a result of the plot call. In addition to the histogram (sam
 As an other example, let's consider the sampling distribution estimation process for a multidimensional statistic, namely Pearson's linear correlation. Keeping the previously mentioned assumptions regarding the data X, the following code estimates the sampling distribution and in the final row, renders the histogram plot similarly to the figure above. Compared to the previous example, notice the difference in estimation process of the chosen statistic. Here the multidimensional statistic, Pearson's correlation, requires two attributes of data X as input (more precisely data slice with shape n x 2) and produces a single output which is the value of correlation. 
 
 ```python
+from sampdist import SampDist
+
 # import custom implementation of Pearson's correlation from statistics module
-from sampdist.statistics import corr_pearson
+from sampdist import corr_pearson
 
 samp = SampDist(corr_pearson)
 samp.estimate(X[:, :2], multid=True) # multid must be set to True
