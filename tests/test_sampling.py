@@ -7,7 +7,7 @@ import pytest
 import sampdist
 from sampdist import SampDist
 
-from sampdist.statistics import (
+from sampdist import (
     mean,
     geometric_mean,
     harmonic_mean,

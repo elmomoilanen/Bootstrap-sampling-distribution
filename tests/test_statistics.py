@@ -7,7 +7,7 @@ from scipy.stats import pearsonr, spearmanr
 
 import sampdist
 
-from sampdist.statistics import (
+from sampdist import (
     trimmed_mean_factory,
     quantile_factory,
     corr_pearson,
