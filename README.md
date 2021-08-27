@@ -32,7 +32,7 @@ samp.estimate(X[:, [0,2]])
 
 samp.plot(column=0) # plot the sampling distribution for first column (se and ci will be included)
 
-# samp.plot(columns=1) would plot the other column
+# samp.plot(column=1) would plot the other column
 ```
 
 After necessary module imports, a custom quantile function was defined which calls NumPy's quantile routine notably with axis parameter set to one. Statistics module of this library has also a quantile function implementation but for the sake of demonstration we defined it here directly. Lastly, after an object of the `SampDist` class has been instantiated, estimate method of the class was called to compute the sampling distribution, standard error and BCa confidence interval that can then be plotted by the plot method. Notice how we passed a data slice of shape n x 2 to the estimate method and as the statistic is one-dimensional (requires input data in format n x 1 to produce one result) it makes the estimation simultaneously for both of the two attributes but of course the results do not have any interdependence.
