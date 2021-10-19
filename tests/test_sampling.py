@@ -42,6 +42,9 @@ all_one_dim_statistics = (
 
 all_multi_dim_statistics = (corr_pearson, corr_spearman)
 
+# init random number generator
+rg = np.random.default_rng()
+
 
 def test_setting_statistic_property():
     samp = SampDist(mean)
@@ -111,3 +114,47 @@ def test_statistic_validity_check_multi_dim_statistics():
         samp = SampDist(statistic)
 
         assert samp._test_statistic_validity(multid=True) is None
+
+
+def test_sampdist_compute_actual_statistic_for_mean():
+    test_data_size = (5, 3)
+    test_data = rg.normal(size=test_data_size)
+
+    abs_tol = 0.0000001
+
+    samp = SampDist(mean)
+    samp._compute_actual_statistic(test_data[:, 0], multid=False)
+
+    assert isclose(
+        np.mean(test_data[:, 0]),
+        samp.actual_stat,
+        abs_tol=abs_tol,
+    )
+
+    samp._compute_actual_statistic(test_data, multid=False)
+    correct_means = np.mean(test_data, axis=0)
+
+    assert correct_means.shape == samp.actual_stat.shape
+
+    assert all(
+        isclose(corr, cand, abs_tol=abs_tol) for corr, cand in zip(correct_means, samp.actual_stat)
+    )
+
+
+def test_sampdist_draw_bootstrap_samples():
+    test_data_size = (5, 3)
+    test_data = rg.normal(size=test_data_size)
+
+    samp = SampDist(mean, smooth_bootstrap=True)
+    iterations = 6
+
+    boot_samples = samp._draw_bootstrap_samples(test_data[:, 0], iterations, multid=False)
+
+    # test that received bootstrap sample has the correct shape
+    assert boot_samples.ndim == 2
+    assert boot_samples.shape == (iterations, test_data.shape[0])
+
+    boot_samples = samp._draw_bootstrap_samples(test_data, iterations, multid=False)
+
+    assert boot_samples.ndim == 3
+    assert boot_samples.shape == (iterations, test_data.shape[0], test_data.shape[1])
