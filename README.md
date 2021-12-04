@@ -8,7 +8,17 @@ Generally speaking, in statistical inference the primary interest is to quantify
 
 ## Installation ##
 
-Python and Poetry (package and dependency manager for Python) are prerequisites for a successful installation. For independent usage, after cloning and navigating to the target folder, run the command `poetry install` in order to create a separate virtual environment for the library and install required third-party dependencies (such as NumPy) inside it. If wanted, unit tests can be run by the command `poetry run pytest`. To include this library as a dependency for another Python program, please read Poetry's documentation regarding addition of git dependencies.
+Python and Poetry (package and dependency manager for Python) are prerequisites for a successful installation.
+
+For independent usage, after cloning and navigating to the target folder, run the following command in a shell
+
+```bash
+poetry install --no-dev
+```
+
+which wont' install the few dev dependencies. As a remark, don't include that option if e.g. you want to be able to run the unit tests. This command creates a virtual environment for the library and install required third-party dependencies (such as NumPy) inside it.
+
+To include this library as a dependency for another Python program, please read Poetry's documentation regarding of git dependencies.
 
 ## Usage ##
 

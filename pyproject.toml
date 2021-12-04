@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "Bootstrap-sampling-distribution"
-version = "1.1.0"
+version = "1.2.0"
 description = "Using bootstrap to estimate the sampling distribution of a specific statistic."
 authors = ["Elmo Moilanen"]
 license = "GPL-3.0-or-later"
