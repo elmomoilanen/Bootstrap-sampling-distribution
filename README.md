@@ -16,7 +16,7 @@ For independent usage, after cloning and navigating to the target folder, run th
 poetry install --no-dev
 ```
 
-which wont' install the few dev dependencies. As a remark, don't include that option if e.g. you want to be able to run the unit tests. This command creates a virtual environment for the library and install required third-party dependencies (such as NumPy) inside it.
+which creates a virtual environment for the library and installs required non-dev third-party dependencies (such as NumPy) inside it. Virtual environment setup is controlled by the *poetry.toml* file. As the *--no-dev* option skips installation of the dev dependencies, don't include it if e.g. you want to be able to run the unit tests.
 
 To include this library as a dependency for another Python program, please read Poetry's documentation regarding of git dependencies.
 
