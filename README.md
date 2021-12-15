@@ -8,7 +8,7 @@ Generally speaking, in statistical inference the primary interest is to quantify
 
 ## Installation ##
 
-Python and Poetry (package and dependency manager for Python) are prerequisites for a successful installation.
+Poetry (a package and dependency manager for Python) is recommended prerequisite for installation and the following short guide will use it. Optionally, you can just look up the dependencies from *pyproject.toml* and start to use this library right away when you have set up an appropriate environment.
 
 For independent usage, after cloning and navigating to the target folder, run the following command in a shell
 
