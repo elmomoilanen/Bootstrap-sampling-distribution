@@ -4,21 +4,21 @@
 
 Library that uses the statistical resampling method bootstrap to estimate a sampling distribution of a specific statistic from the provided dataset. Estimates of standard error and confidence interval of the statistic can subsequently be determined from the obtained distribution, confidence interval being adjusted for both bias and skewness.
 
-Generally speaking, in statistical inference the primary interest is to quantify the effect size or in other words practical significance of a measurement and as a secondary but yet important thing would be to evaluate uncertainty of the measurement. This library provides computational tools for the latter thing by making an initial assumption that the original data is a representative sample of the unknown population allowing one to use the available sample to generate new samples by the bootstrap resampling method to obtain at the end the sampling distribution of the statistic under consideration. Sampling distribution enables one to compute standard error and confidence interval for the statistic, both quantifying precision of the measurement. The library uses the standard deviation of computed values of the statistic as the standard error and confidence intervals are constructed using the bias-corrected and accelerated (BCa) bootstrap approach, indicating that these intervals are adjusted for bias and skewness and thus making them possibly differ e.g. from the confidence intervals computed with the naive percentile method.
+Generally speaking, in statistical inference the primary interest is to quantify the effect size or in other words practical significance of a measurement and as a secondary but yet important thing would be to evaluate uncertainty of the measurement. This library provides computational tools for the latter by making an initial assumption that the original data is a representative sample of the unknown population allowing one to use the available sample to generate new samples by the bootstrap resampling method to obtain at the end the sampling distribution of the statistic under consideration.
+
+Sampling distribution enables one to compute standard error and confidence interval for the statistic, both quantifying precision of the measurement. The library uses the standard deviation of computed values of the statistic as the standard error and confidence intervals are constructed using the bias-corrected and accelerated (BCa) bootstrap approach, indicating that these intervals are adjusted for bias and skewness and thus making them possibly differ e.g. from the confidence intervals computed with the naive percentile method.
 
 ## Installation ##
 
-Poetry (a package and dependency manager for Python) is recommended prerequisite for installation and the following short guide will use it. Optionally, you can just look up the dependencies from *pyproject.toml* and start to use this library right away when you have set up an appropriate environment.
+Poetry (a package and dependency manager for Python) is recommended for installation and the following short guide will use it. Optionally, you can just look up the dependencies from *pyproject.toml* and start to use this library right away when you have set up an appropriate environment.
 
-For independent usage, after cloning and navigating to the target folder, run the following command in a shell
+After cloning and navigating to the target folder, run the following command in a shell
 
 ```bash
 poetry install --no-dev
 ```
 
-which creates a virtual environment for the library and installs required non-dev third-party dependencies (such as NumPy) inside it. Virtual environment setup is controlled by the *poetry.toml* file. As the *--no-dev* option skips installation of the dev dependencies, don't include it if e.g. you want to be able to run the unit tests.
-
-To include this library as a dependency for another Python program, please read Poetry's documentation regarding of git dependencies.
+which creates a virtual environment for the library and installs required non-development third-party dependencies (such as NumPy) inside it. Virtual environment setup is controlled by the *poetry.toml* file. As the *--no-dev* option skips installation of the dev dependencies, don't include it in the command above if e.g. you want to be able to run the unit tests (pytest is needed for that).
 
 ## Usage ##
 

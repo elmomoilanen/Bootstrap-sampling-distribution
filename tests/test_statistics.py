@@ -68,7 +68,7 @@ def test_pearson_corr_other():
 
 def test_pearson_corr_no_linear_correlation():
     x = np.linspace(-1, 1, 50)
-    y = np.sqrt(1 - x ** 2)
+    y = np.sqrt(1 - x**2)
     X = np.column_stack((x, y))
 
     assert isclose(

@@ -122,7 +122,7 @@ def quantile_factory(q: float):
 def corr_pearson(x: np.ndarray):
     x_mx = x - np.mean(x, axis=1)[:, np.newaxis]
     x_cov = np.sum(x_mx[:, :, 0] * x_mx[:, :, 1], axis=1)
-    x_std = np.sqrt(np.sum(x_mx ** 2, axis=1))
+    x_std = np.sqrt(np.sum(x_mx**2, axis=1))
 
     return x_cov / (x_std[:, 0] * x_std[:, 1])
 

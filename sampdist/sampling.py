@@ -243,8 +243,8 @@ class SampDist:
         logger.debug("jackknife statistics calculated")
 
         difference = jackknife_stats - np.mean(jackknife_stats, axis=0)
-        denominator = np.sum(difference ** 2, axis=0) ** 1.5
-        nominator = np.sum(difference ** 3, axis=0)
+        denominator = np.sum(difference**2, axis=0) ** 1.5
+        nominator = np.sum(difference**3, axis=0)
 
         acceleration = np.full(denominator.shape, np.inf)
         almost_zero = denominator < 1e-300
