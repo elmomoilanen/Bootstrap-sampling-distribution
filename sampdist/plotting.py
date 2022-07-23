@@ -13,10 +13,9 @@ class Plotting:
 
     Kwargs
     ------
-    plot_style_sheet: str
-        Pyplot style sheet to be used in histogram plots. By default
-        uses the "default" style. Allowed other styles are "seaborn",
-        "Solarize_Light2" and "ggplot".
+    plot_style_sheet: str = "default"
+        Pyplot style sheet to be used in histogram plots. Allowed
+        styles are "default", "seaborn", "Solarize_Light2" and "ggplot".
     """
 
     allowed_styles = (
@@ -175,6 +174,7 @@ class Plotting:
         fig.tight_layout()
 
         plt.show()
+        plt.close(fig)
 
     def plot_estimates(
         self, plot_data: Dict[str, Any], plot_config: Dict[str, Any], plot_comparison: bool = False

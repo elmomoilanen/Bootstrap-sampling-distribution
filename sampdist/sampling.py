@@ -45,17 +45,18 @@ class SampDist:
 
     Kwargs
     ------
-    alpha: numeric = 95
+    alpha: int|float = 95
         Coverage level of the confidence interval.
 
     smooth_bootstrap: bool = False
         If True, add random noise to each bootstrap sample in order to reduce
         the discreteness of the bootstrap distribution.
 
-    plot_style: str
+    plot_style: str|None = None
         Pyplot plotting style. Plotting class in module `plotting` defines
         the allowed styles and the passed style will be checked against them.
-        If the passed style is not allowed, an exception is raised.
+        If the passed style is not allowed, an exception is raised. If None,
+        that is the default, uses pyplot's default style.
 
     Examples
     --------
@@ -300,6 +301,9 @@ class SampDist:
         interval values are represented on the right side of the histogram. In addition,
         black and red triangles illustrate the observed value and confidence interval points
         on the histogram, respectively.
+
+        Invokes pyplot's show method which may require to set the correct or desired
+        matploblib backend.
 
         Parameters
         ----------

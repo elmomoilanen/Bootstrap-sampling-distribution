@@ -4,11 +4,11 @@
 
 Library that uses the statistical resampling method bootstrap to estimate a sampling distribution of a specific statistic from the provided data. Estimates of standard error and confidence interval of the statistic can subsequently be determined from the obtained distribution, confidence interval being adjusted for both bias and skewness.
 
-Generally speaking, in statistical inference the primary interest is to quantify the effect size or in other words practical significance of a measurement and as a secondary but yet important thing would be to evaluate uncertainty of the measurement. This library provides computational tools for the latter by making an initial assumption that the original data is a representative sample of the unknown population enabling usage of the available sample to generate new samples by the bootstrap resampling method to obtain at the end the sampling distribution of the statistic under consideration.
+Generally speaking, in statistical inference the primary interest is to quantify the effect size or in other words practical significance of a measurement and as a secondary but yet important thing would be to evaluate uncertainty of the measurement. This library provides computational tools for the latter with an initial assumption that the original data (or sample) is a representative sample of the unknown population. This enables to use the sample to generate new samples by the bootstrap resampling method.
 
-Sampling distribution makes it possible to compute standard error and confidence interval for the statistic, both quantifying precision of the measurement. Library uses the standard deviation of computed values of the statistic as the standard error and confidence intervals are constructed using the bias-corrected and accelerated (BCa) bootstrap approach, indicating that these intervals are adjusted for bias and skewness and thus making them possibly differ e.g. from the confidence intervals computed with the naive percentile method.
+Sampling distribution obtained by the bootstrap resampling process makes it possible to compute the standard error and confidence interval for the statistic, both quantifying precision of the measurement. Standard deviation of the computed values of the statistic is used as the standard error and confidence intervals are constructed using the bias-corrected and accelerated (BCa) bootstrap approach, indicating that these intervals are adjusted for bias and skewness and thus making them possibly differ e.g. from the confidence intervals computed with the naive percentile method.
 
-## Installation ##
+## Install ##
 
 Poetry (a package and dependency manager for Python) is recommended for installation and the following short guide uses it. Optionally, you can just look up the dependencies from *pyproject.toml* and start to use this library right away when you have set up an appropriate environment.
 
@@ -20,9 +20,19 @@ poetry install --no-dev
 
 which creates a virtual environment for the library and installs required non-development third-party dependencies (such as NumPy) inside it. Virtual environment setup is controlled by the *poetry.toml* file. As the *--no-dev* option skips installation of the development dependencies, don't include it in the command above if e.g. you want to be able to run the unit tests (pytest is needed for that).
 
-## Usage ##
+For the plotting to work correctly it might be required to set the backend for Matplotlib. One way to do this is to set the MPLBACKEND environment variable (overrides any matplotlibrc configuration) for the current shell.
+
+## Use ##
 
 This section provides two short examples for usage of the library.
+
+Start a new Python shell e.g. as follows
+
+```bash
+MPLBACKEND= poetry run python
+```
+
+with a proper backend (e.g. macosx or qt5agg) after the equal sign. If the backend has been set correctly earlier, just drop this setting.
 
 Let's consider first a case, where we assume X to be a numerical data with shape n x p (n observations, p attributes) and 10-quantile to be the statistic of interest. Let's further assume that the number of attributes p is equal to or larger than three.
 
