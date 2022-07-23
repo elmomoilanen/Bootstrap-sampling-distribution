@@ -36,35 +36,21 @@ class SampDist:
     ----------
     statistic: callable
         One or multi-dimensional function, e.g. mean, median, kurtosis,
-        correlation or any other function of data that takes numerical data as input.
-        Passed 1d functions must be defined with axis == 1, i.e. they must operate row-wise.
-        Multi-dimensional case is more complicated as these functions must accept 3d tensor-kind
-        inputs, please look at the Example section below for further advice. Also the `statistics`
-        module contains few examples, e.g. Pearson and Spearman's correlations.
+        correlation or any other function that takes numerical data as input.
+        Passed 1d functions must be defined with axis == 1, i.e. they must operate
+        row-wise. Multi-dimensional case is more complicated as these functions must
+        accept 3d tensor-kind inputs. For more on this, please look at the Examples
+        section below. Also the `statistics` module contains few examples, e.g.
+        Pearson and Spearman's correlations.
 
     Kwargs
     ------
-    alpha: numeric
+    alpha: numeric = 95
         Coverage level of the confidence interval.
 
-    actual_stat: numeric
-        Observed value of the statistic, computed initially with the
-        passed data.
-
-    b_stats: NumPy array
-        Bootstap (sampling) distribution of the statistic.
-
-    se: numeric
-        Standard error of the statistic, i.e. standard deviation
-        of the statistic under the sampling distribution.
-
-    ci: NumPy array:
-        Bias-corrected and accelerated (BCa) confidence interval of the statistic.
-
-    smooth_bootstrap: bool
+    smooth_bootstrap: bool = False
         If True, add random noise to each bootstrap sample in order to reduce
-        the discreteness of the bootstrap distribution. As a default, equals
-        to False.
+        the discreteness of the bootstrap distribution.
 
     plot_style: str
         Pyplot plotting style. Plotting class in module `plotting` defines
@@ -73,8 +59,8 @@ class SampDist:
 
     Examples
     --------
-    Example for an one-dimensional statistic, a quantile. Estimation is run simultaneously
-    for two of the columns of data X (with total shape N x P). NumPy's quantile method
+    Consider first an one-dimensional statistic quantile. Estimation is run simultaneously
+    for two of the columns of data X (has total shape n x p). NumPy's quantile method
     is used directly, but the version from statistics module could also be used.
 
     >>> import numpy as np
@@ -85,14 +71,14 @@ class SampDist:
     >>> samp.plot(column=0)
     >>> samp.plot(column=1)
 
-    Example for a two-dimensional statistic, Pearson's linear correlation. Estimation is run
-    for two of the columns of data X and their correlation coefficient is received as a return
-    value. Correlation function is imported from the statistics module where it has been
-    implemented to accept 3d data as input.
+    Consider then a two-dimensional statistic Pearson's linear correlation. Estimation is run
+    for two of the columns of data X and their correlation coefficient is received as output.
+    Correlation function is imported from the statistics module where it has been implemented
+    to accept 3-d data for input (SampDist requires extra dimension to be inserted in this case).
 
     >>> from sampdist import SampDist
     >>> from sampdist.statistics import corr_pearson
-    >>> samp = SampDist(corr_pearson) # use default alpha 95 and not smoothed bootstrap
+    >>> samp = SampDist(corr_pearson)
     >>> samp.estimate(X[:, :2], multid=True) # estimate sampling distribution of linear correlation for columns 0 and 1
     >>> samp.se, samp.ci # access the computed standard error and BCa confidence interval
     >>> samp.plot()
@@ -157,7 +143,7 @@ class SampDist:
     @alpha.setter
     def alpha(self, value):
         if not isinstance(value, (int, float)):
-            raise TypeError("Alpha must be numerical")
+            raise TypeError("Alpha must be integer or float")
 
         if not (value >= self._alpha_min and value <= self._alpha_max):
             raise ValueError(f"Alpha must be within [{self._alpha_min},{self._alpha_max}]")
@@ -191,8 +177,6 @@ class SampDist:
             else:
                 self.actual_stat = self.statistic(sample.T)
 
-        logger.debug("actual statistic value computed")
-
     def _draw_bootstrap_samples(self, sample, iterations, multid):
         rg = np.random.default_rng()
 
@@ -209,7 +193,6 @@ class SampDist:
             data = sample[row_indices, np.arange(sample.shape[1])]
 
         if self.smooth_bootstrap:
-            logger.debug("using smooth bootstrap, thus add random noise to data")
             sigma = 1 / np.sqrt(sample.shape[0])
             data = data + rg.normal(scale=sigma, size=data.shape)
 
@@ -307,30 +290,33 @@ class SampDist:
             ]
         )
 
-    def plot(self, column: int = 0, bins: Union[int, str] = "sqrt", comparison: bool = False):
+    def plot(
+        self, column: int = 0, bins: Union[int, str] = "sqrt", comparison: bool = False
+    ) -> None:
         """Plot bootstrap distribution with SE, observed value and BCa CIs.
 
         Distribution is represented by a histogram, roughly illustrating the density of
-        the underlying distribution. Standard error, observed value and BCa confidence interval values
-        are represented on the right side of the histogram. In addition, black and red triangles
-        illustrates the observed value and confidence interval points, respectively, on the histogram.
+        the underlying distribution. Standard error, observed value and BCa confidence
+        interval values are represented on the right side of the histogram. In addition,
+        black and red triangles illustrate the observed value and confidence interval points
+        on the histogram, respectively.
 
         Parameters
         ----------
-        column: int
+        column: int = 0
             Number of the column to be plotted, defaults to first column of the data.
 
-        bins: int or str
+        bins: int or str = "sqrt"
             Count of consecutive and non-overlapping intervals for the x-axis of the histogram.
             Default value is set to be "sqrt", indicating a particular binning strategy.
             If given as integer, it represents precisely the interval count. On the contrary,
             when given as str value, it must describe a binning strategy, which must be
-            one of the following: "auto","sturges","fd","doane","scott","rice" or "sqrt".
+            one of the following: "auto", "sturges", "fd", "doane", "scott", "rice" or "sqrt".
 
-        comparison: bool
-            Defaults to False, when the plotted histogram will not have naive percentile CIs
-            included in addition to the BCa confidence interval. If True, the percentile
-            confidence interval is plotted alongside the BCa interval.
+        comparison: bool = False
+            In default case the plotted histogram will not have naive percentile CIs
+            included in addition to the BCa confidence interval. If True, it's the
+            contrary case.
         """
         if not isinstance(column, int):
             raise TypeError("Column must be an integer")
@@ -354,7 +340,7 @@ class SampDist:
                 raise ValueError(f"Bins strategy must be one of {', '.join(allowed_strategies)}")
 
         else:
-            raise TypeError("Bins must be an integer or a string describing the binning strategy")
+            raise TypeError("Bins must be integer or a string describing the binning strategy")
 
         plot_data = {
             "b_stats": self.b_stats if self.b_stats.ndim == 1 else self.b_stats[:, column],
@@ -370,8 +356,8 @@ class SampDist:
 
         self._plot_obj.plot_estimates(plot_data, plot_config, comparison)
 
-    def estimate(self, sample: np.ndarray, iterations: int = 5000, multid: bool = False):
-        """Compute sampling distribution, SE and BCa confidence intervals for given statistic.
+    def estimate(self, sample: np.ndarray, iterations: int = 5000, multid: bool = False) -> None:
+        """Compute sampling distribution, SE and BCa confidence interval for given statistic.
 
         Prior any computations, validity of the statistic is evaluated. It must apply
         correctly either to one- or two-dimensional data.
@@ -382,17 +368,16 @@ class SampDist:
             Sample representing the observed data, ndim = 1 or = 2.
             E.g., given data matrix X, both X[:,col] and X[:,[col_1:col_N]] are valid inputs.
 
-        iterations: int
+        iterations: int = 5000
             Number of (bootstrap) resamples to be drawn.
 
-        multid: bool
-            False, if the statistic should apply one-dimensionally to data, i.e. it
-            would provide one return value for one-dimensional data and p values for
-            two-dimensional data (a matrix) with p initial attribute columns. Consider
-            e.g. statistics median or 90 percentile in this case. If set to `True`,
-            refers to multi-dimensional case where the statistic would produce one
-            return value for a two-dimensional data. Consider e.g. Pearson or Spearman's
-            correlation.
+        multid: bool = False
+            Default is that the statistic should apply one-dimensionally to data. This means
+            that it would provide single output for one-dimensional data and p outputs for
+            two-dimensional data having p attribute columns. Consider e.g. statistics median
+            or 90 percentile in this case. If set to True, it refers to multi-dimensional
+            case where the statistic would produce one output for two-dimensional data.
+            Consider e.g. Pearson or Spearman's correlation as examples.
         """
         if not isinstance(sample, np.ndarray):
             raise TypeError("Sample must be a NumPy array, type `numpy.ndarray`")

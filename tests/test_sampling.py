@@ -77,7 +77,7 @@ def test_setting_alpha_property():
 def test_setting_not_numeric_alpha():
     not_valid_alpha = "90"
 
-    with pytest.raises(TypeError, match=r"Alpha must be numerical"):
+    with pytest.raises(TypeError, match=r"Alpha must be integer or float"):
         samp = SampDist(median, alpha=not_valid_alpha)
 
 

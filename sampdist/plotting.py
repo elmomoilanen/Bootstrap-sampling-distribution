@@ -1,5 +1,6 @@
 """Implements plotting functionality."""
 import logging
+from typing import Dict, Any
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -14,8 +15,8 @@ class Plotting:
     ------
     plot_style_sheet: str
         Pyplot style sheet to be used in histogram plots. By default
-        uses the "default" style. Allowed styles are limited "default",
-        "seaborn", "Solarize_Light2" and "ggplot".
+        uses the "default" style. Allowed other styles are "seaborn",
+        "Solarize_Light2" and "ggplot".
     """
 
     allowed_styles = (
@@ -172,13 +173,16 @@ class Plotting:
 
         ax.grid()
         fig.tight_layout()
+
         plt.show()
 
-    def plot_estimates(self, plot_data: dict, plot_config: dict, plot_comparison: bool = False):
+    def plot_estimates(
+        self, plot_data: Dict[str, Any], plot_config: Dict[str, Any], plot_comparison: bool = False
+    ) -> None:
         """Plot bootstrap distribution as a histrogram with SE, observed value and BCa CIs.
 
         This method can be used directly but it is more convenient to use via the
-        SampDist class, thus see its `plot` method.
+        SampDist class, see its `plot` method for more information.
 
         To call this method properly, run the `estimate` method for an instantiated
         SampDist object from the sampling module and pass the results here in a manner
@@ -186,21 +190,21 @@ class Plotting:
 
         Parameters
         ----------
-        plot_data: dict
-            Results of the estimation process done in sampling module. Must contain
-            keys `b_stats`, `se`, `ci` and `actual_stat` with NumPy array type values.
-            Furthermore, a key `alpha` with numerical value must be present.
+        plot_data: dict[str, Any]
+            Results of the estimation process completed in the sampling module.
+            Must contain keys `b_stats`, `se`, `ci` and `actual_stat` having
+            NumPy arrays as values and key `alpha` with a numerical value.
 
-        plot_config: dict
+        plot_config: dict[str, Any]
             Settings for the histogram plot. Must contain key `bins` with a positive
-            integer or a str value. If an integer, it must between one and the count
-            of observations in data. If passed as a string, it must be a name accepted
-            by the pyplot library and its histogram method. Furthermore, a key `statistic`
-            with str value must be present.
+            integer or string value. If integer, it must between one and the count
+            of observations present in data. If string, it must be a name accepted
+            by the pyplot library and its histogram method. Furthermore, key `statistic`
+            with a string value must be present (basically name of the statistic).
 
-        plot_comparison: bool
-            If True, naive percentile based confidence interval is included to the plot
-            alongside the BCa CI. As a default False, when percentile CI will not be included.
+        plot_comparison: bool = False
+            If True, naive percentile based confidence interval is included in the plot
+            alongside the BCa CI. Otherwise and as default, it's not included.
         """
         if plot_comparison:
             plot_data["ci_perc"] = self._compute_percentile_ci(

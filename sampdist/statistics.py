@@ -33,9 +33,9 @@ calls. Closures are simply functions that remember their enclosing scopes,
 here e.g. `trimmed_mean_factory` returns a closure `trimmed_mean` that
 uses the parameter `cut` from the enclosing scope.
 
-Two of the functions, corr_person and corr_spearman, require the data
-to be in shape n x 2 but they must be called with an additional dimension.
-E.g. for a data X of shape n x 2 one should call the Pearson's correlation
+Two of the functions, `corr_person` and `corr_spearman`, require the shape
+of data to be n x 2 but they must be called with an additional dimension inserted.
+E.g., for data X of shape n x 2 one should call the Pearson's correlation
 by `corr_pearson(X[np.newaxis,:,:])`.
 """
 import logging
