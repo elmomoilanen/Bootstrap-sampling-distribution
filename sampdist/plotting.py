@@ -11,11 +11,10 @@ logger = logging.getLogger(__name__)
 class Plotting:
     """Plots bootstrap distribution with its associated statistics.
 
-    Kwargs
-    ------
-    plot_style_sheet: str = "default"
-        Pyplot style sheet to be used in histogram plots. Allowed
-        styles are "default", "seaborn", "Solarize_Light2" and "ggplot".
+    Parameters
+    ----------
+    plot_style_sheet : str
+        Pyplot style sheet to be used in histogram plots.
     """
 
     allowed_styles = (
@@ -25,8 +24,8 @@ class Plotting:
         "ggplot",
     )
 
-    def __init__(self, **kwargs):
-        self.style_sheet = kwargs.get("plot_style_sheet", "default")
+    def __init__(self, plot_style_sheet: str = "default") -> None:
+        self.style_sheet = plot_style_sheet
         self._check_style_validity()
 
         logger.debug("using style sheet %s", self.style_sheet)
@@ -190,21 +189,21 @@ class Plotting:
 
         Parameters
         ----------
-        plot_data: dict[str, Any]
+        plot_data : Dict[str, Any]
             Results of the estimation process completed in the sampling module.
             Must contain keys `b_stats`, `se`, `ci` and `actual_stat` having
             NumPy arrays as values and key `alpha` with a numerical value.
 
-        plot_config: dict[str, Any]
+        plot_config : Dict[str, Any]
             Settings for the histogram plot. Must contain key `bins` with a positive
             integer or string value. If integer, it must between one and the count
             of observations present in data. If string, it must be a name accepted
             by the pyplot library and its histogram method. Furthermore, key `statistic`
             with a string value must be present (basically name of the statistic).
 
-        plot_comparison: bool = False
+        plot_comparison : bool
             If True, naive percentile based confidence interval is included in the plot
-            alongside the BCa CI. Otherwise and as default, it's not included.
+            alongside the BCa CI. Otherwise and as the default case, it's not included.
         """
         if plot_comparison:
             plot_data["ci_perc"] = self._compute_percentile_ci(

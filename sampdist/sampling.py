@@ -1,6 +1,6 @@
 """Implements sampling distribution functionality."""
 import logging
-from typing import Union
+from typing import Optional, Union, Callable
 
 import numpy as np
 from scipy.stats import norm
@@ -34,7 +34,7 @@ class SampDist:
 
     Parameters
     ----------
-    statistic: callable
+    statistic : callable
         One or multi-dimensional function, e.g. mean, median, kurtosis,
         correlation or any other function that takes numerical data as input.
         Passed 1d functions must be defined with axis == 1, i.e. they must operate
@@ -43,20 +43,18 @@ class SampDist:
         section below. Also the `statistics` module contains few examples, e.g.
         Pearson and Spearman's correlations.
 
-    Kwargs
-    ------
-    alpha: int|float = 95
-        Coverage level of the confidence interval.
+    alpha : int or float
+        Coverage level of the confidence interval. Default is 95.
 
-    smooth_bootstrap: bool = False
-        If True, add random noise to each bootstrap sample in order to reduce
-        the discreteness of the bootstrap distribution.
+    smooth_bootstrap : bool
+        Default is False. If True, adds random noise to each bootstrap sample
+        in order to reduce the discreteness of the bootstrap distribution.
 
-    plot_style: str|None = None
-        Pyplot plotting style. Plotting class in module `plotting` defines
-        the allowed styles and the passed style will be checked against them.
-        If the passed style is not allowed, an exception is raised. If None,
-        that is the default, uses pyplot's default style.
+    plot_style : str or None
+        Pyplot plotting style. If None, that is the default, uses pyplot's default
+        style. Plotting class in module `plotting` defines allowed styles and the
+        passed style will be checked against them. If the passed style is not allowed,
+        an exception will be raised.
 
     Examples
     --------
@@ -69,8 +67,7 @@ class SampDist:
     >>> def quantile(x): return np.quantile(x, q=0.1, axis=1)
     >>> samp = SampDist(quantile, alpha=99, smooth_bootstrap=True)
     >>> samp.estimate(X[:, [0,2]]) # estimate sampling distribution for columns 0 and 2
-    >>> samp.plot(column=0)
-    >>> samp.plot(column=1)
+    >>> samp.plot(column=0) # or column=1 would plot for the X[:, 2]
 
     Consider then a two-dimensional statistic Pearson's linear correlation. Estimation is run
     for two of the columns of data X and their correlation coefficient is received as output.
@@ -91,7 +88,13 @@ class SampDist:
     Efron, B., Hastie T. 2016. Computer age statistical inference. Cambridge University Press.
     """
 
-    def __init__(self, statistic, **kwargs):
+    def __init__(
+        self,
+        statistic: Callable,
+        alpha: Union[int, float] = 95,
+        smooth_bootstrap: bool = False,
+        plot_style: Optional[str] = None,
+    ) -> None:
         self.actual_stat = np.nan
         self.b_stats = np.nan
         self.se = np.nan
@@ -104,11 +107,11 @@ class SampDist:
         self._alpha_max = 99.9999
 
         self.statistic = statistic
-        self.alpha = kwargs.get("alpha", 95)
+        self.alpha = alpha
 
-        self.smooth_bootstrap = kwargs.get("smooth_bootstrap", False)
+        self.smooth_bootstrap = bool(smooth_bootstrap)
 
-        self._plot_style = kwargs.get("plot_style")
+        self._plot_style = plot_style
         general_plot_config = (self._plot_style and {"plot_style_sheet": self._plot_style}) or {}
 
         self._plot_obj = Plotting(**general_plot_config)
@@ -307,18 +310,18 @@ class SampDist:
 
         Parameters
         ----------
-        column: int = 0
-            Number of the column to be plotted, defaults to first column of the data.
+        column : int
+            Number of the column to be plotted, defaults to the first column of the data.
 
-        bins: int or str = "sqrt"
+        bins : int or str
             Count of consecutive and non-overlapping intervals for the x-axis of the histogram.
-            Default value is set to be "sqrt", indicating a particular binning strategy.
-            If given as integer, it represents precisely the interval count. On the contrary,
-            when given as str value, it must describe a binning strategy, which must be
-            one of the following: "auto", "sturges", "fd", "doane", "scott", "rice" or "sqrt".
+            Default value is "sqrt", indicating a particular binning strategy. If given
+            as integer, it represents precisely the interval count. On the contrary, when
+            given as str value, it must describe a binning strategy, which must be one of
+            the following: "auto", "sturges", "fd", "doane", "scott", "rice" or "sqrt".
 
-        comparison: bool = False
-            In default case the plotted histogram will not have naive percentile CIs
+        comparison : bool
+            Default is False when the plotted histogram will not have naive percentile CIs
             included in addition to the BCa confidence interval. If True, it's the
             contrary case.
         """
@@ -368,20 +371,20 @@ class SampDist:
 
         Parameters
         ----------
-        sample: numpy.ndarray
+        sample : numpy.ndarray
             Sample representing the observed data, ndim = 1 or = 2.
             E.g., given data matrix X, both X[:,col] and X[:,[col_1:col_N]] are valid inputs.
 
-        iterations: int = 5000
-            Number of (bootstrap) resamples to be drawn.
+        iterations : int
+            Number of (bootstrap) resamples to be drawn. Default is 5000.
 
-        multid: bool = False
-            Default is that the statistic should apply one-dimensionally to data. This means
-            that it would provide single output for one-dimensional data and p outputs for
-            two-dimensional data having p attribute columns. Consider e.g. statistics median
-            or 90 percentile in this case. If set to True, it refers to multi-dimensional
-            case where the statistic would produce one output for two-dimensional data.
-            Consider e.g. Pearson or Spearman's correlation as examples.
+        multid : bool
+            Default False means that the statistic should apply one-dimensionally to data.
+            This means that it would provide single output for one-dimensional data and
+            p outputs for two-dimensional data having p attribute columns. Consider e.g.
+            statistics median or 90 percentile in this case. If set to True, it refers
+            to multi-dimensional case where the statistic would produce one output for
+            two-dimensional data. Consider e.g. Pearson or Spearman's correlation as examples.
         """
         if not isinstance(sample, np.ndarray):
             raise TypeError("Sample must be a NumPy array, type `numpy.ndarray`")
