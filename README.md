@@ -82,3 +82,13 @@ samp.plot()
 ![](docs/bootstrap_distribution_corr.png)
 
 To wrap up this section, for one-dimensional statistics (that take one column/attribute of the data as input and produce one output) this library is quite convenient to use but for multidimensional statistics like correlation (which take k columns as input and produce one output) usage is bit trickier as it is required to implement these functions to take data input in higher-dimensional format (3d for correlation in particular). For further information and examples on this, please take a look at the statistics module.
+
+## Docs ##
+
+Render the documentation as HTML with the following command
+
+```bash
+sphinx-build -b html docs/source/ docs/build/html
+```
+
+and open the starting page docs/build/html/index.html in a browser.
