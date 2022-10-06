@@ -49,7 +49,7 @@ samp = SampDist(quantile, alpha=99, smooth_bootstrap=True)
 # Estimate sampling distribution simultaneously for columns 0 and 2
 samp.estimate(X[:, [0,2]])
 
-# samp.b_stats has the sampling distribution of the quantile for both cols
+# samp.b_stats has the sampling distribution of the quantile for both columns
 # Standard error (samp.se) and BCa CI (samp.ci) are also available
 
 # Plot the sampling distribution for the first column
@@ -83,7 +83,7 @@ samp.plot()
 
 ## Docs ##
 
-Make sure that you included the *docs* dependency group run in the installation.
+Make sure that you included the *docs* dependency group in the installation step.
 
 Render the documentation as HTML with the following command
 
