@@ -1,85 +1,91 @@
 """Implements sampling distribution functionality."""
-import logging
-from typing import Optional, Union, Callable
+from typing import Any, Optional, Union, Callable
 
 import numpy as np
-from scipy.stats import norm
+from scipy.stats import norm  # type: ignore[import]
 
 from .plotting import Plotting
-
-logger = logging.getLogger(__name__)
 
 
 class SampDist:
     """Estimates the sampling distribution of a chosen statistic using random sampling with replacement.
 
-    This method enables estimation of precision of the statistic and is convenient in circumstances
-    where analytical evaluation of the precision is either very difficult or totally impossible.
+    This method enables estimation of precision of the statistic and is convenient in
+    circumstances where analytical evaluation of the precision is either very difficult
+    or totally impossible.
 
-    In total, the sampling (bootstrap) distribution, standard error (SE) and bias-corrected and accelerated
-    confidence interval (BCa) of the statistic are computed. Standard error is the standard
-    deviation of the statistic under the sampling distribution and BCa confidence interval
-    adjusts for bias and skewness in the bootstrap distribution.
+    In total, the sampling (bootstrap) distribution, standard error (SE) and bias-corrected
+    and accelerated confidence interval (BCa) of the statistic are computed. Standard error
+    is standard deviation of the statistic under the sampling distribution and BCa confidence
+    interval adjusts for bias and skewness in the bootstrap distribution.
 
-    Notice that few assumptions are taken place, namely that empirical distribution function of the
-    observed data serves as a representative approximating distribution (model of population)
-    from which the samples are drawn and that observations are from an iid population.
-    Hence the estimated results might be misleading if the unknown population distribution
-    is not well represented by the empirical distribution or does not have a finite variance.
-    Of cource, these aspects are rarely known in advance.
+    Notice that few assumptions are taken place here, namely that empirical distribution
+    function of the observed data serves as a representative approximating distribution
+    (model of population) from which the samples are drawn and that the observations are
+    from an iid population. Thus, estimated results might be misleading if the unknown
+    population distribution is not well represented by the empirical distribution or does
+    not have a finite variance. Of cource, these aspects are rarely known in advance.
 
-    As a further warning notice, be cautious to use a redundantly high number of resamples.
-    This may cause memory issues if dimensionality of the data sample equals two (passed as a matrix)
-    or improvements in estimation results might be totally negligible.
+    Furthermore, be cautious to use a redundantly high number of resamples. This may cause
+    memory issues if dimensionality of the data sample equals two (passed as a matrix) or
+    improvements in estimation results might be totally negligible.
 
     Parameters
     ----------
-    statistic : callable
-        One or multi-dimensional function, e.g. mean, median, kurtosis,
-        correlation or any other function that takes numerical data as input.
-        Passed 1d functions must be defined with axis == 1, i.e. they must operate
-        row-wise. Multi-dimensional case is more complicated as these functions must
-        accept 3d tensor-kind inputs. For more on this, please look at the Examples
-        section below. Also the `statistics` module contains few examples, e.g.
-        Pearson and Spearman's correlations.
+    statistic : callable (ndarray) -> Any
+        Function that takes a numerical data array as input and produces some
+        output (preferably a numerical to make computations to work). Function
+        can be one-dimensional (maps 1 x n input to 1 output or p x n to p outputs)
+        like mean, median and kurtosis or multidimensional (maps k x n to 1 output)
+        like e.g. Pearson and Spearman's correlation functions (these are 2 x n). Note
+        from the above that the input array shape is reversed compared to typical
+        n x k case. Thus, 1-d functions must be defined with axis=1 (operate row-wise)
+        and multi-d functions must accept 3-d tensor-kind inputs. Latter can be done
+        by using np.newaxis to create one extra dimension. For more on this, please
+        take a look at the Examples section below and the statistics module which contains
+        implementations for which the mentioned aspects have been taken into account.
 
     alpha : int or float
         Coverage level of the confidence interval. Default is 95.
 
     smooth_bootstrap : bool
         Default is False. If True, adds random noise to each bootstrap sample
-        in order to reduce the discreteness of the bootstrap distribution.
+        in order to reduce discreteness of the bootstrap distribution.
 
     plot_style : str or None
-        Pyplot plotting style. If None, that is the default, uses pyplot's default
-        style. Plotting class in module `plotting` defines allowed styles and the
-        passed style will be checked against them. If the passed style is not allowed,
+        Pyplot plotting style. If None (default), uses pyplot's default style.
+        Plotting class in module plotting defines allowed styles and the passed
+        style will be checked against them. If the passed style is not allowed,
         an exception will be raised.
 
     Examples
     --------
-    Consider first an one-dimensional statistic quantile. Estimation is run simultaneously
-    for two of the columns of data X (has total shape n x p). NumPy's quantile method
-    is used directly, but the version from statistics module could also be used.
+    Consider first a one-dimensional statistic quantile and imaginary numerical data X
+    with shape n x p (n observations, p attributes). For now, sampling distribution
+    estimation is run simultaneously for two columns of the data X and hence there
+    will be two separate results. NumPy's own quantile function is used, but the version
+    from the statistics module could also be used.
 
     >>> import numpy as np
     >>> from sampdist import SampDist
     >>> def quantile(x): return np.quantile(x, q=0.1, axis=1)
     >>> samp = SampDist(quantile, alpha=99, smooth_bootstrap=True)
     >>> samp.estimate(X[:, [0,2]]) # estimate sampling distribution for columns 0 and 2
-    >>> samp.plot(column=0) # or column=1 would plot for the X[:, 2]
+    >>> samp.se, samp.ci # both standard errors and BCa confidence intervals
+    >>> samp.plot(column=0) # sampling distribution plot, column=1 would plot for the X[:, 2]
 
-    Consider then a two-dimensional statistic Pearson's linear correlation. Estimation is run
-    for two of the columns of data X and their correlation coefficient is received as output.
-    Correlation function is imported from the statistics module where it has been implemented
-    to accept 3-d data for input (SampDist requires extra dimension to be inserted in this case).
+    Consider then a two-dimensional statistic Pearson's linear correlation and the same
+    data as above. In this case, estimation must be run for two columns of the data X
+    and their correlation coefficient will be received for output. Correlation function
+    is imported from the statistics module where it has been implemented to accept 3-d
+    data as for input (SampDist requires extra dimension to be inserted in this case).
 
     >>> from sampdist import SampDist
     >>> from sampdist.statistics import corr_pearson
     >>> samp = SampDist(corr_pearson)
-    >>> samp.estimate(X[:, :2], multid=True) # estimate sampling distribution of linear correlation for columns 0 and 1
-    >>> samp.se, samp.ci # access the computed standard error and BCa confidence interval
-    >>> samp.plot()
+    >>> samp.estimate(X[:, :2], multid=True) # estimate sampling distribution for columns 0 and 1
+    >>> samp.se, samp.ci # standard error and BCa confidence interval
+    >>> samp.plot() # plot the sampling distribution for correlation
 
     References
     ----------
@@ -90,17 +96,17 @@ class SampDist:
 
     def __init__(
         self,
-        statistic: Callable,
+        statistic: Callable[[np.ndarray], Any],
         alpha: Union[int, float] = 95,
         smooth_bootstrap: bool = False,
         plot_style: Optional[str] = None,
     ) -> None:
-        self.actual_stat = np.nan
-        self.b_stats = np.nan
-        self.se = np.nan
-        self.ci = np.nan
+        self.actual_stat: Union[float, np.ndarray] = np.nan
+        self.b_stats: Union[float, np.ndarray] = np.nan
+        self.se: Union[float, np.ndarray] = np.nan
+        self.ci: Union[float, np.ndarray] = np.nan
 
-        self._acceleration = np.nan
+        self._acceleration: Union[float, np.ndarray] = np.nan
         self._z0 = np.nan
 
         self._alpha_min = 90
@@ -116,10 +122,10 @@ class SampDist:
 
         self._plot_obj = Plotting(**general_plot_config)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"{self.__class__.__name__}(statistic={self.statistic.__name__}, alpha={self.alpha})"
 
-    def _reset_estimates(self):
+    def _reset_estimates(self) -> None:
         self.actual_stat = np.nan
         self.b_stats = np.nan
         self.se = np.nan
@@ -129,11 +135,11 @@ class SampDist:
         self._z0 = np.nan
 
     @property
-    def statistic(self):
+    def statistic(self) -> Callable[[np.ndarray], Any]:
         return self._statistic
 
     @statistic.setter
-    def statistic(self, func):
+    def statistic(self, func: Callable[[np.ndarray], Any]) -> None:
         if not callable(func):
             raise TypeError("Statistic must be callable")
 
@@ -141,58 +147,54 @@ class SampDist:
         self._reset_estimates()
 
     @property
-    def alpha(self):
+    def alpha(self) -> Union[int, float]:
         return self._alpha
 
     @alpha.setter
-    def alpha(self, value):
+    def alpha(self, value: Union[int, float]) -> None:
         if not isinstance(value, (int, float)):
-            raise TypeError("Alpha must be integer or float")
+            raise TypeError("Alpha must be an integer or float")
 
         if not (value >= self._alpha_min and value <= self._alpha_max):
             raise ValueError(f"Alpha must be within [{self._alpha_min},{self._alpha_max}]")
 
         self._alpha = value
 
-    def _test_statistic_validity(self, multid):
+    def _test_statistic_validity(self, multid: bool) -> None:
         test_array = np.ones(2) if not multid else np.ones((2, 2))
-
-        logger.debug(
-            "testing statistic %s with data of shape %s", self.statistic.__name__, test_array.shape
-        )
 
         try:
             self.statistic(test_array)
-
-        except (np.AxisError, IndexError) as err:
-            logger.debug("test resulted error `%s`, good to go", err)
-
+        except (np.AxisError, IndexError):
+            # Test resulted in accepted error, good to go
+            pass
         else:
             dim = f"{'multi' if multid else 'one'}-dimensional"
-            raise ValueError(f"Statistic is ill-defined for {dim} data, see the instructions")
+            raise ValueError(f"Statistic {self.statistic.__name__} is ill-defined for {dim} data")
 
-    def _compute_actual_statistic(self, sample, multid):
+    def _compute_actual_statistic(self, sample: np.ndarray, multid: bool) -> None:
         if multid:
             self.actual_stat = self.statistic(sample[np.newaxis, :, :])
-
         else:
             if sample.ndim == 1:
                 self.actual_stat = self.statistic(sample.reshape(1, -1))
             else:
                 self.actual_stat = self.statistic(sample.T)
 
-    def _draw_bootstrap_samples(self, sample, iterations, multid):
+    def _draw_bootstrap_samples(
+        self, sample: np.ndarray, iterations: int, multid: bool
+    ) -> np.ndarray:
         rg = np.random.default_rng()
 
         if sample.ndim == 1 or multid:
-            dimensions = (iterations, sample.shape[0])
-            row_indices = rg.integers(0, sample.shape[0], size=dimensions)
+            dims2 = (iterations, sample.shape[0])
+            row_indices = rg.integers(0, sample.shape[0], size=dims2)
 
-            data = sample[row_indices]
+            data: np.ndarray = sample[row_indices]
 
         else:
-            dimensions = tuple([iterations] + list(sample.shape))
-            row_indices = rg.integers(0, sample.shape[0], size=dimensions)
+            dims3 = tuple([iterations] + list(sample.shape))
+            row_indices = rg.integers(0, sample.shape[0], size=dims3)
 
             data = sample[row_indices, np.arange(sample.shape[1])]
 
@@ -200,14 +202,10 @@ class SampDist:
             sigma = 1 / np.sqrt(sample.shape[0])
             data = data + rg.normal(scale=sigma, size=data.shape)
 
-        logger.debug("bootstrap samples drawn")
-
         return data
 
-    def _get_estimate_of_acceleration(self, sample, multid):
+    def _get_estimate_of_acceleration(self, sample: np.ndarray, multid: bool) -> None:
         stat_count = sample.shape[0]
-
-        logger.debug("starting jackknife calculations for estimate of acceleration")
 
         if sample.ndim == 1:
             jackknife_stats = np.array(
@@ -227,8 +225,6 @@ class SampDist:
                     [self.statistic(np.delete(sample, idx, axis=0).T) for idx in range(stat_count)]
                 )
 
-        logger.debug("jackknife statistics calculated")
-
         difference = jackknife_stats - np.mean(jackknife_stats, axis=0)
         denominator = np.sum(difference**2, axis=0) ** 1.5
         nominator = np.sum(difference**3, axis=0)
@@ -237,11 +233,9 @@ class SampDist:
         almost_zero = denominator < 1e-300
         acceleration[~almost_zero] = 1 / 6 * nominator[~almost_zero] / denominator[~almost_zero]
 
-        logger.debug("estimate of acceleration calculated")
-
         self._acceleration = acceleration
 
-    def _get_estimate_of_bias_correction(self):
+    def _get_estimate_of_bias_correction(self) -> None:
         p0 = np.sum(self.b_stats <= self.actual_stat, axis=0) / self.b_stats.shape[0]
 
         if self.b_stats.ndim == 1:
@@ -258,7 +252,7 @@ class SampDist:
 
         self._z0 = norm.ppf(p0)
 
-    def _get_bca_confidence_intervals(self, alpha):
+    def _get_bca_confidence_intervals(self, alpha: float) -> np.ndarray:
         self._get_estimate_of_bias_correction()
 
         x0 = self._z0 + (self._z0 + norm.ppf(alpha)) / (
@@ -267,16 +261,14 @@ class SampDist:
         p = norm.cdf(x0)
         p_rounded = np.round(p * 100, decimals=3)
 
-        q_values = np.percentile(self.b_stats, p_rounded, axis=0, interpolation="linear")
+        q_values: np.ndarray = np.percentile(self.b_stats, p_rounded, axis=0, interpolation="linear")  # type: ignore[call-overload]
 
         if q_values.ndim == 2:
             q_values = np.diagonal(q_values)
 
-        logger.debug("confidence interval point for alpha %s calculated", alpha)
-
         return q_values
 
-    def _compute_estimates(self, sample, iterations, multid):
+    def _compute_estimates(self, sample: np.ndarray, iterations: int, multid: bool) -> None:
         bootstrapped_data = self._draw_bootstrap_samples(sample, iterations, multid)
 
         self.b_stats = self.statistic(bootstrapped_data)
@@ -339,7 +331,7 @@ class SampDist:
 
         if isinstance(bins, int):
             if not (bins > 0 and bins <= self.b_stats.shape[0]):
-                raise ValueError(f"Bins must be defined within [1,{self.b_stats.shape[0]}]")
+                raise ValueError(f"Bins must be given within [1,{self.b_stats.shape[0]}]")
 
         elif isinstance(bins, str):
             allowed_strategies = {"auto", "sturges", "fd", "doane", "scott", "rice", "sqrt"}
@@ -347,7 +339,7 @@ class SampDist:
                 raise ValueError(f"Bins strategy must be one of {', '.join(allowed_strategies)}")
 
         else:
-            raise TypeError("Bins must be integer or a string describing the binning strategy")
+            raise TypeError("Bins must be an integer or string describing the binning strategy")
 
         plot_data = {
             "b_stats": self.b_stats if self.b_stats.ndim == 1 else self.b_stats[:, column],
@@ -372,18 +364,17 @@ class SampDist:
         Parameters
         ----------
         sample : numpy.ndarray
-            Sample representing the observed data, ndim = 1 or = 2.
-            E.g., given data matrix X, both X[:,col] and X[:,[col_1:col_N]] are valid inputs.
+            Sample representing the observed data, ndim = 1 or = 2. Pass the data in normal
+            format as n x p (n observations, p attributes). E.g., given data matrix X,
+            both X[:,col] and X[:,[col_1:col_N]] would be valid inputs.
 
         iterations : int
             Number of (bootstrap) resamples to be drawn. Default is 5000.
 
         multid : bool
-            Default False means that the statistic should apply one-dimensionally to data.
-            This means that it would provide single output for one-dimensional data and
-            p outputs for two-dimensional data having p attribute columns. Consider e.g.
-            statistics median or 90 percentile in this case. If set to True, it refers
-            to multi-dimensional case where the statistic would produce one output for
+            Default `False` means that the statistic applies one-dimensionally to data, i.e.,
+            one output for n x 1 data and p outputs for n x p data. If set to `True`, it
+            refers to multidimensional case where the statistic would produce one output for
             two-dimensional data. Consider e.g. Pearson or Spearman's correlation as examples.
         """
         if not isinstance(sample, np.ndarray):

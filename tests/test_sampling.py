@@ -4,7 +4,6 @@ from math import isclose
 import numpy as np
 import pytest
 
-import sampdist
 from sampdist import SampDist
 
 from sampdist import (
@@ -77,7 +76,7 @@ def test_setting_alpha_property():
 def test_setting_not_numeric_alpha():
     not_valid_alpha = "90"
 
-    with pytest.raises(TypeError, match=r"Alpha must be integer or float"):
+    with pytest.raises(TypeError, match=r"Alpha must be an integer or float"):
         samp = SampDist(median, alpha=not_valid_alpha)
 
 

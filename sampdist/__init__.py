@@ -1,8 +1,8 @@
 """Quick guide to sampdist package.
 
 Package contains the following modules:
-- sampling
 - plotting
+- sampling
 - statistics
 
 `SampDist` class from the sampling modules implements

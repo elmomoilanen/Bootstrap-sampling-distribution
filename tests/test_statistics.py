@@ -1,11 +1,9 @@
-"""Tests for few statistical functions implemented in `statistics` module."""
+"""Tests for some statistical functions implemented in `statistics` module."""
 from math import isclose
 
 import numpy as np
 import pytest
 from scipy.stats import pearsonr, spearmanr
-
-import sampdist
 
 from sampdist import (
     trimmed_mean_factory,

@@ -1,11 +1,8 @@
 """Implements plotting functionality."""
-import logging
 from typing import Dict, Any
 
 import numpy as np
-import matplotlib.pyplot as plt
-
-logger = logging.getLogger(__name__)
+import matplotlib.pyplot as plt  # type: ignore[import]
 
 
 class Plotting:
@@ -28,23 +25,19 @@ class Plotting:
         self.style_sheet = plot_style_sheet
         self._check_style_validity()
 
-        logger.debug("using style sheet %s", self.style_sheet)
-
-    def _check_style_validity(self):
+    def _check_style_validity(self) -> None:
         if self.style_sheet not in self.allowed_styles:
             allowed = ", ".join(self.allowed_styles)
-
             raise ValueError(f"Style {self.style_sheet} not in allowed styles list: {allowed}")
 
     @staticmethod
-    def _compute_percentile_ci(data, alpha):
+    def _compute_percentile_ci(data: np.ndarray, alpha: float) -> Any:
         alpha_upper = 100 - (100 - alpha) / 2
         alpha_lower = 0 + (100 - alpha) / 2
-
         return np.percentile(data, [alpha_lower, alpha_upper])
 
     @staticmethod
-    def _generate_font_family():
+    def _generate_font_family() -> Dict[str, Dict[str, Any]]:
         return {
             "label_fonts": dict(fontsize=10, color="black", fontname="serif"),
             "header_fonts": dict(fontsize=12, color="black", fontname="sans-serif"),
@@ -72,7 +65,7 @@ class Plotting:
         }
 
     @staticmethod
-    def _set_text_field(ax, config):
+    def _set_text_field(ax: plt.Axes, config: Dict[str, Any]) -> None:
         ax.text(
             config["x"],
             config["y"],
@@ -85,7 +78,7 @@ class Plotting:
         )
 
     @staticmethod
-    def _set_annotation(ax, config):
+    def _set_annotation(ax: plt.Axes, config: Dict[str, Any]) -> None:
         arrow_points = 1 if config["arrow_direction"] == "down" else -1
 
         ax.annotate(
@@ -100,7 +93,9 @@ class Plotting:
             horizontalalignment="center",
         )
 
-    def _draw_histogram(self, plot_data, plot_config, plot_comparison):
+    def _draw_histogram(
+        self, plot_data: Dict[str, Any], plot_config: Dict[str, Any], plot_comparison: bool
+    ) -> None:
         fig, ax = plt.subplots(figsize=(8, 6))
         _ = ax.hist(plot_data["b_stats"], bins=plot_config["bins"], color="silver", alpha=0.75)
 
@@ -149,7 +144,7 @@ class Plotting:
             ax.axvline(x=obs_val, alpha=0.5, color="black", linestyle="--", linewidth=0.75)
 
         if not plot_comparison:
-            # only plot obs arrow when not plotting confidence interval comparison
+            # Only plot obs arrow when not plotting confidence interval comparison
             self._set_annotation(
                 ax, dict(text="obs", color="black", value=obs_val, arrow_direction="down")
             )
@@ -160,10 +155,8 @@ class Plotting:
             self._set_annotation(
                 ax, dict(text=f"{alpha}", color="orangered", value=bca_value, arrow_direction="up")
             )
-
             if plot_comparison:
                 perc_value = plot_data["ci_perc"][index]
-
                 self._set_annotation(
                     ax,
                     dict(text=f"{alpha}", color="coral", value=perc_value, arrow_direction="down"),
