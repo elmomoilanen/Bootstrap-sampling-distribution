@@ -8,6 +8,8 @@ Generally speaking, in statistical inference the primary interest is to quantify
 
 Sampling distribution obtained by the bootstrap resampling process makes it possible to compute the standard error and confidence interval for the statistic, both quantifying precision of the measurement. Standard deviation of the computed values of the statistic is used as the standard error and confidence intervals are constructed using the bias-corrected and accelerated (BCa) bootstrap approach, indicating that these intervals are adjusted for both bias and skewness and thus making them possibly differ e.g. from the confidence intervals computed with the naive percentile method.
 
+At the moment, SciPy's *stats.bootstrap* functions similarly to this library but it doesn't e.g. provide integrated plotting.
+
 ## Install ##
 
 Poetry is the recommended tool for installation and the following short guide uses it.
