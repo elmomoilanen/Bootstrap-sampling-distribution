@@ -4,15 +4,16 @@ from typing import Any, Optional, Union, Callable
 import numpy as np
 from scipy.stats import norm  # type: ignore[import]
 
+from .errors import StatisticError, BcaError
 from .plotting import Plotting
 
 
 class SampDist:
-    """Estimates the sampling distribution of a chosen statistic using random sampling with replacement.
+    """Estimates the sampling distribution of a statistic using random sampling with replacement.
 
-    This method enables estimation of precision of the statistic and is convenient in
-    circumstances where analytical evaluation of the precision is either very difficult
-    or totally impossible.
+    This method enables estimation of statistical accuracy of the statistic and is
+    convenient in circumstances where analytical evaluation of the accuracy is either
+    very difficult or totally impossible.
 
     In total, the sampling (bootstrap) distribution, standard error (SE) and bias-corrected
     and accelerated confidence interval (BCa) of the statistic are computed. Standard error
@@ -90,7 +91,9 @@ class SampDist:
     References
     ----------
     Efron, B. 1979. Bootstrap methods: Another look at the jackknife. Ann. Statist., 7(1), 1-26.
+
     Efron, B. 1987. Better bootstrap confidence intervals. J. Amer. Statist. Assoc., 82(397), 171-200.
+
     Efron, B., Hastie T. 2016. Computer age statistical inference. Cambridge University Press.
     """
 
@@ -162,15 +165,20 @@ class SampDist:
 
     def _test_statistic_validity(self, multid: bool) -> None:
         test_array = np.ones(2) if not multid else np.ones((2, 2))
-
+        # Quick and dirty validity test
         try:
             self.statistic(test_array)
         except (np.AxisError, IndexError):
-            # Test resulted in accepted error, good to go
+            # Test resulted in one of accepted errors
+            # 1 dim: axis 1 is out of bounds for array of dimension 1
+            # multid: too many indices for array: array is 2-dimensional, but 3 were indexed
             pass
         else:
-            dim = f"{'multi' if multid else 'one'}-dimensional"
-            raise ValueError(f"Statistic {self.statistic.__name__} is ill-defined for {dim} data")
+            data_dim = f"{'multi' if multid else 'one'}-dimensional data"
+            help_msg = f"Make sure that {'extra dimension' if multid else 'axis=1'} is set."
+            raise StatisticError(
+                f"{self.statistic.__name__} is ill-defined for {data_dim}. {help_msg}"
+            )
 
     def _compute_actual_statistic(self, sample: np.ndarray, multid: bool) -> None:
         if multid:
@@ -193,6 +201,7 @@ class SampDist:
             data: np.ndarray = sample[row_indices]
 
         else:
+            # 1-d statistic but estimation run for multiple columns
             dims3 = tuple([iterations] + list(sample.shape))
             row_indices = rg.integers(0, sample.shape[0], size=dims3)
 
@@ -246,9 +255,7 @@ class SampDist:
         if np.any(invalid_p0, axis=0):
             invalid_cols = invalid_p0.nonzero()[0]
 
-            raise ValueError(
-                f"BCa confidence interval cannot be computed for columns {invalid_cols}"
-            )
+            raise BcaError(f"BCa confidence interval cannot be computed for columns {invalid_cols}")
 
         self._z0 = norm.ppf(p0)
 
@@ -376,6 +383,15 @@ class SampDist:
             one output for n x 1 data and p outputs for n x p data. If set to `True`, it
             refers to multidimensional case where the statistic would produce one output for
             two-dimensional data. Consider e.g. Pearson or Spearman's correlation as examples.
+
+        Raises
+        ------
+        StatisticError : subclass of SampDistError
+            `self.statistic` is ill-defined to be used in estimation.
+
+        BcaError : subclass of SampDistError
+            Sampling distribution is degenerate and thus cannot compute BCa CIs.
+            This can happen for example if the data (in bootstrap samples) is almost identical.
         """
         if not isinstance(sample, np.ndarray):
             raise TypeError("Sample must be a NumPy array, type `numpy.ndarray`")

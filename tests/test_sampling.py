@@ -24,6 +24,8 @@ from sampdist import (
     corr_spearman,
 )
 
+from sampdist.errors import StatisticError, BcaError
+
 # all one dimensional statistics except those behind factory function
 all_one_dim_statistics = (
     mean,
@@ -113,6 +115,25 @@ def test_statistic_validity_check_multi_dim_statistics():
         samp = SampDist(statistic)
 
         assert samp._test_statistic_validity(multid=True) is None
+
+
+def test_statistic_validity_check_error():
+    samp = SampDist(lambda x: x)
+
+    # Statistic cannot handle case axis=1
+    # Note that passed input data doesn't matter to this error
+
+    with pytest.raises(StatisticError):
+        samp.estimate(np.array([1, 2, 3]))
+
+
+def test_bca_error():
+    samp = SampDist(mean, alpha=99)
+
+    # BCa should fail when the data is exactly identical
+
+    with pytest.raises(BcaError):
+        samp.estimate(np.array([1, 1, 1, 1]))
 
 
 def test_sampdist_compute_actual_statistic_for_mean():

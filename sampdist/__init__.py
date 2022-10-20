@@ -1,17 +1,19 @@
 """Quick guide to sampdist package.
 
-Package contains the following modules:
+Package contains the following modules
+- errors
 - plotting
 - sampling
 - statistics
 
-`SampDist` class from the sampling modules implements
-the main functionality of this package and can be interacted
-via its public interfaces `estimate` and `plot`.
+`SampDist` class from the `sampling` module implements the main functionality
+of this package and can be interacted via its public interfaces `estimate`
+and `plot`.
 
-Some common statistical functions have been implemented in the
-statistics module for convenience.
+For convenience some common statistical functions have been implemented library
+compatibly in the `statistics` module.
 """
+from sampdist.errors import SampDistError
 from sampdist.sampling import SampDist
 
 from sampdist.statistics import (

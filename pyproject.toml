@@ -8,7 +8,7 @@ readme = "README.md"
 keywords = ["statistics", "statistical-inference", "resampling", "sampling-distribution"]
 
 [tool.poetry.dependencies]
-python = ">=3.9,<3.11"
+python = "^3.9"
 numpy = "^1.23"
 matplotlib = "^3.6"
 scipy = "^1.9"
