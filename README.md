@@ -83,7 +83,7 @@ samp.plot()
 
 ![](docs/bootstrap_distribution_corr.png)
 
-Notice that validity of the statistic is checked when calling the estimate method. If the check fails, a `StatisticError` exception will be raised. Furthermore, if the estimated sampling distribution is degenerate (e.g. data almost identical), a `BcaError` exception gets raised (in this case you may try to use True for smooth_bootstrap parameter). Both exceptions inherit from class `SampDistError` which can be imported directly from sampdist namespace.
+Notice that validity of the statistic is checked when calling the estimate method. If this check fails, a `StatisticError` exception will be raised. Furthermore, if the estimated sampling distribution is degenerate (e.g. data almost identical), a `BcaError` exception gets raised (in this case you may try to use True for the smooth_bootstrap parameter). Both exceptions inherit from class `SampDistError` which can be imported directly from the sampdist namespace.
 
 ## Docs ##
 

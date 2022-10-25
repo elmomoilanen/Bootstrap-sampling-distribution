@@ -183,11 +183,10 @@ class SampDist:
     def _compute_actual_statistic(self, sample: np.ndarray, multid: bool) -> None:
         if multid:
             self.actual_stat = self.statistic(sample[np.newaxis, :, :])
+        elif sample.ndim == 1:
+            self.actual_stat = self.statistic(sample.reshape(1, -1))
         else:
-            if sample.ndim == 1:
-                self.actual_stat = self.statistic(sample.reshape(1, -1))
-            else:
-                self.actual_stat = self.statistic(sample.T)
+            self.actual_stat = self.statistic(sample.T)
 
     def _draw_bootstrap_samples(
         self, sample: np.ndarray, iterations: int, multid: bool
@@ -220,19 +219,17 @@ class SampDist:
             jackknife_stats = np.array(
                 [self.statistic(np.delete(sample, idx).reshape(1, -1)) for idx in range(stat_count)]
             )
-
+        elif multid:
+            jackknife_stats = np.array(
+                [
+                    self.statistic(np.delete(sample, idx, axis=0)[np.newaxis, :, :])
+                    for idx in range(stat_count)
+                ]
+            )
         else:
-            if multid:
-                jackknife_stats = np.array(
-                    [
-                        self.statistic(np.delete(sample, idx, axis=0)[np.newaxis, :, :])
-                        for idx in range(stat_count)
-                    ]
-                )
-            else:
-                jackknife_stats = np.array(
-                    [self.statistic(np.delete(sample, idx, axis=0).T) for idx in range(stat_count)]
-                )
+            jackknife_stats = np.array(
+                [self.statistic(np.delete(sample, idx, axis=0).T) for idx in range(stat_count)]
+            )
 
         difference = jackknife_stats - np.mean(jackknife_stats, axis=0)
         denominator = np.sum(difference**2, axis=0) ** 1.5
