@@ -17,7 +17,6 @@ scipy = "^1.9"
 black = "^22.8"
 pytest = "^7.1"
 flake8 = "^5.0"
-pre-commit = "^2.20"
 mypy = "^0.981"
 
 [tool.poetry.group.docs.dependencies]
