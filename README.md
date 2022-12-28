@@ -58,8 +58,7 @@ samp.estimate(X[:, [0,2]])
 samp.plot(column=0)
 ```
 
-After necessary module imports in the code snippet above, a custom quantile function was defined which calls NumPy's quantile routine notably with the axis parameter set to one. Statistics module of this library has also a quantile function implementation but for the sake of demonstration it was defined here directly. Lastly, after an object of the `SampDist` class was instantiated, its estimate method was called to compute the sampling distribution, standard error and BCa confidence interval. Data slice of shape n x 2
-was passed to the estimate method and as the quantile statistic is one-dimensional (maps n x 1 input to single result and n x p input to p results) it ran the estimation simultaneously for both of the two attributes (columns 0 and 2 in X).
+After the necessary module imports in the code snippet above, a custom quantile function was defined which calls NumPy's quantile routine with the axis parameter equal to one. After an object of the *SampDist* class was instantiated, its estimate method was called in order to compute the sampling distribution, standard error and BCa confidence interval. Data slice of shape n x 2 was passed to the estimate method and as the quantile statistic is one-dimensional (maps n x 1 input to a single result and n x p input to p results) it ran the estimation simultaneously for both of the two attributes (columns 0 and 2 in X).
 
 Following figure represents a possible result of the plot call. In addition to the histogram it shows the observed value (value of the statistic in original data sample) pointed to by the black arrow, standard error and BCa confidence interval pointed to by red arrows on x-axis.
 
@@ -83,7 +82,7 @@ samp.plot()
 
 ![](docs/bootstrap_distribution_corr.png)
 
-Notice that validity of the statistic is checked when calling the estimate method. If this check fails, a `StatisticError` exception will be raised. Furthermore, if the estimated sampling distribution is degenerate (e.g. data almost identical), a `BcaError` exception gets raised (in this case you may try to use True for the smooth_bootstrap parameter). Both exceptions inherit from class `SampDistError` which can be imported directly from the sampdist namespace.
+Notice that validity of the statistic is checked when calling the estimate method. If this check fails, a *StatisticError* exception will be raised. Furthermore, if the estimated sampling distribution is degenerate (e.g. data almost identical), a *BcaError* exception gets raised (in this case you may try to use True for the smooth_bootstrap parameter). Both exceptions inherit from class *SampDistError* which can be imported directly from the sampdist namespace.
 
 ## Docs ##
 
