@@ -51,8 +51,10 @@ samp = SampDist(quantile, alpha=99, smooth_bootstrap=True)
 # Estimate sampling distribution simultaneously for columns 0 and 2
 samp.estimate(X[:, [0,2]])
 
-# samp.b_stats has the sampling distribution of the quantile for both columns
-# Standard error (samp.se) and BCa CI (samp.ci) are also available
+# Sampling distribution of the quantile for both columns
+samp.b_stats
+
+# Standard error (samp.se) and BCa confidence interval (samp.ci) also available
 
 # Plot the sampling distribution for the first column
 samp.plot(column=0)
@@ -69,7 +71,7 @@ For the second example, let's consider the sampling distribution estimation proc
 ```python
 from sampdist import SampDist
 
-# Import custom implementation of Pearson's correlation
+# Import custom implementation of the Pearson's correlation
 from sampdist import corr_pearson
 
 samp = SampDist(corr_pearson)
