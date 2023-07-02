@@ -265,7 +265,7 @@ class SampDist:
         p = norm.cdf(x0)
         p_rounded = np.round(p * 100, decimals=3)
 
-        q_values: np.ndarray = np.percentile(self.b_stats, p_rounded, axis=0, interpolation="linear")  # type: ignore[call-overload]
+        q_values: np.ndarray = np.percentile(self.b_stats, p_rounded, axis=0, method="linear")
 
         if q_values.ndim == 2:
             q_values = np.diagonal(q_values)
