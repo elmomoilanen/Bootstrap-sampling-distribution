@@ -147,7 +147,7 @@ def test_sampdist_compute_actual_statistic_for_mean():
 
     assert isclose(
         np.mean(test_data[:, 0]),
-        samp.actual_stat,
+        samp.actual_stat[0],
         abs_tol=abs_tol,
     )
 
@@ -178,3 +178,31 @@ def test_sampdist_draw_bootstrap_samples():
 
     assert boot_samples.ndim == 3
     assert boot_samples.shape == (iterations, test_data.shape[0], test_data.shape[1])
+
+
+def test_sampdist_estimate_api_single_attribute():
+    test_data_size = (100, 2)
+    test_data = rg.normal(size=test_data_size)
+
+    quantile = quantile_factory(0.95)
+
+    samp = SampDist(quantile, smooth_bootstrap=True)
+    samp.estimate(test_data[:, 0])
+
+    assert samp.ci.size == 2
+    assert samp.se.size == 1
+    assert samp.b_stats.ndim == 1
+
+
+def test_sampdist_estimate_api_multiple_attributes():
+    test_data_size = (100, 3)
+    test_data = rg.normal(size=test_data_size)
+
+    quantile = quantile_factory(0.95)
+
+    samp = SampDist(quantile, smooth_bootstrap=True)
+    samp.estimate(test_data[:, [0, 2]])
+
+    assert samp.ci.size == 4
+    assert samp.se.size == 2
+    assert samp.b_stats.ndim == 2

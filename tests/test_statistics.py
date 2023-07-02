@@ -48,7 +48,7 @@ def test_pearson_corr():
 
     assert isclose(
         pearsonr(X[:, 0], X[:, 1])[0],
-        corr_pearson(X[np.newaxis, :, :]),
+        corr_pearson(X[np.newaxis, :, :])[0],
         abs_tol=0.0000001,
     )
 
@@ -59,7 +59,7 @@ def test_pearson_corr_other():
 
     assert isclose(
         pearsonr(X[:, 0], X[:, 1])[0],
-        corr_pearson(X[np.newaxis, :, :]),
+        corr_pearson(X[np.newaxis, :, :])[0],
         abs_tol=0.0000001,
     )
 
@@ -71,7 +71,7 @@ def test_pearson_corr_no_linear_correlation():
 
     assert isclose(
         pearsonr(X[:, 0], X[:, 1])[0],
-        corr_pearson(X[np.newaxis, :, :]),
+        corr_pearson(X[np.newaxis, :, :])[0],
         abs_tol=0.000000001,
     )
 
@@ -88,7 +88,7 @@ def test_spearman_corr():
 
     assert isclose(
         spearmanr(X[:, 0], X[:, 1])[0],
-        corr_spearman(X[np.newaxis, :, :]),
+        corr_spearman(X[np.newaxis, :, :])[0],
         abs_tol=0.0000001,
     )
 
@@ -99,7 +99,7 @@ def test_spearman_corr_other():
 
     assert isclose(
         spearmanr(X[:, 0], X[:, 1])[0],
-        corr_spearman(X[np.newaxis, :, :]),
+        corr_spearman(X[np.newaxis, :, :])[0],
         abs_tol=0.0000001,
     )
 
