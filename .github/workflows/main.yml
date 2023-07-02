@@ -2,56 +2,57 @@ name: main
 
 on:
   push:
+    paths-ignore: [ "docs/**" ]
     branches: [ main ]
   pull_request:
+    paths-ignore: [ "docs/**" ]
     branches: [ main ]
 
 jobs:
-  build:
+  tests:
     name: ${{ matrix.os }} / ${{ matrix.python-version }}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [ubuntu-latest]
         python-version: ["3.10"]
+    defaults:
+      run:
+        shell: bash
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
         
-    - name: Get Python version
-      id: python-version
-      shell: bash
-      run: echo ::set-output name=version::$(python -c "import sys; print('-'.join(str(v) for v in sys.version_info))")
-      
-    - name: Bootstrap Poetry
-      shell: bash
+    - name: Install Poetry
       run: curl -sSL https://install.python-poetry.org | python3 - -y
       
     - name: Update PATH
-      shell: bash
       run: echo "$HOME/.local/bin" >> $GITHUB_PATH
-        
+              
     - name: Install dependencies
-      shell: bash
-      run: poetry install
+      run: poetry install --with dev
 
     - name: Check formatting
       run: poetry run black --check --quiet .
       
     - name: Lint with flake8
       run: |
-        # stop the build if there are Python syntax errors or undefined names
-        poetry run flake8 ./sampdist/* --count --select=E9,F63,F7,F82 --show-source --statistics
-        # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-        poetry run flake8 ./sampdist/* --max-line-length=100 --ignore=E501,F401 --max-complexity=10 --count --exit-zero
+        # Stop if there are Python syntax errors or undefined names
+        poetry run flake8 ./sampdist/* \
+          --count --select=E9,F63,F7,F82 --show-source --statistics
+        poetry run flake8 ./sampdist/* --max-line-length=100 \
+          --ignore=E501,F401 --max-complexity=10 --count --exit-zero
 
     - name: Check typing
       run: poetry run mypy .
         
-    - name: Run tests
-      run: poetry run pytest -q
+    - name: Run tests with coverage
+      run: poetry run coverage run -m pytest -q
+
+    - name: Make coverage report
+      run: poetry run coverage report
