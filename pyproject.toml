@@ -8,20 +8,24 @@ readme = "README.md"
 keywords = ["statistics", "statistical-inference", "resampling", "sampling-distribution"]
 
 [tool.poetry.dependencies]
-python = "^3.9"
-numpy = "^1.23"
-matplotlib = "^3.6"
-scipy = "^1.9"
+python = ">=3.10,<3.13"
+numpy = "^1.25"
+matplotlib = "^3.7"
+scipy = "^1.11"
+
+[tool.poetry.group.dev]
+optional = true
 
 [tool.poetry.group.dev.dependencies]
-black = "^22.8"
-pytest = "^7.1"
-flake8 = "^5.0"
-mypy = "^0.981"
+black = "^23.3"
+pytest = "^7.4"
+flake8 = "^6.0"
+mypy = "^1.4"
+coverage = "^7.2"
 
 [tool.poetry.group.docs.dependencies]
-sphinx = "^5.0"
-sphinx-rtd-theme = "1.0.0"
+sphinx = "^6.1"
+sphinx-rtd-theme = "^1.0"
 
 [tool.black]
 line-length = 100
