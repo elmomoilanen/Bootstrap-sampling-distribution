@@ -7,3 +7,4 @@ __pycache__/
 poetry.lock
 .mypy_cache
 build
+.coverage
