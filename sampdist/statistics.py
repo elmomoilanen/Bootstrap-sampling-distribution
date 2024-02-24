@@ -42,7 +42,7 @@ This will insert one extra dimension to the front, e.g. n x 2 turns to 1 x n x 2
 from typing import Any, Callable
 import numpy as np
 
-from scipy.stats import (  # type: ignore[import]
+from scipy.stats import (  # type: ignore[import-untyped]
     hmean,
     trim_mean,
     skew as scipy_skew,

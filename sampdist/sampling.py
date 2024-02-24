@@ -2,7 +2,7 @@
 from typing import Any, Optional, Union, Callable
 
 import numpy as np
-from scipy.stats import norm  # type: ignore[import]
+from scipy.stats import norm  # type: ignore[import-untyped]
 
 from .errors import StatisticError, BcaError
 from .plotting import Plotting
