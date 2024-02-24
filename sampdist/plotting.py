@@ -2,7 +2,8 @@
 from typing import Dict, Any
 
 import numpy as np
-import matplotlib.pyplot as plt  # type: ignore[import]
+import matplotlib.pyplot as plt
+from matplotlib.axes import Axes
 
 
 class Plotting:
@@ -14,21 +15,17 @@ class Plotting:
         Pyplot style sheet to be used in histogram plots.
     """
 
-    allowed_styles = (
-        "default",
-        "seaborn",
-        "Solarize_Light2",
-        "ggplot",
+    allowed_styles = ["default"] + sorted(
+        style for style in plt.style.available if not style.startswith("_")
     )
 
     def __init__(self, plot_style_sheet: str = "default") -> None:
-        self.style_sheet = plot_style_sheet
-        self._check_style_validity()
+        if plot_style_sheet not in self.allowed_styles:
+            raise ValueError(
+                f"Style {plot_style_sheet} not in allowed styles list: {', '.join(self.allowed_styles)}"
+            )
 
-    def _check_style_validity(self) -> None:
-        if self.style_sheet not in self.allowed_styles:
-            allowed = ", ".join(self.allowed_styles)
-            raise ValueError(f"Style {self.style_sheet} not in allowed styles list: {allowed}")
+        self.style_sheet = plot_style_sheet
 
     @staticmethod
     def _compute_percentile_ci(data: np.ndarray, alpha: float) -> Any:
@@ -65,7 +62,7 @@ class Plotting:
         }
 
     @staticmethod
-    def _set_text_field(ax: plt.Axes, config: Dict[str, Any]) -> None:
+    def _set_text_field(ax: Axes, config: Dict[str, Any]) -> None:
         ax.text(
             config["x"],
             config["y"],
@@ -78,7 +75,7 @@ class Plotting:
         )
 
     @staticmethod
-    def _set_annotation(ax: plt.Axes, config: Dict[str, Any]) -> None:
+    def _set_annotation(ax: Axes, config: Dict[str, Any]) -> None:
         arrow_points = 1 if config["arrow_direction"] == "down" else -1
 
         ax.annotate(
