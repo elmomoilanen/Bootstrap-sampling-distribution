@@ -7,6 +7,8 @@ on:
   pull_request:
     paths-ignore: [ "docs/**" ]
     branches: [ main ]
+  schedule:
+    - cron: '45 18 3 * *'
 
 jobs:
   tests:
@@ -21,7 +23,7 @@ jobs:
         shell: bash
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v4
@@ -42,7 +44,6 @@ jobs:
       
     - name: Lint with flake8
       run: |
-        # Stop if there are Python syntax errors or undefined names
         poetry run flake8 ./sampdist/* \
           --count --select=E9,F63,F7,F82 --show-source --statistics
         poetry run flake8 ./sampdist/* --max-line-length=100 \
