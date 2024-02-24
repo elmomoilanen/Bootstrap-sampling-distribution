@@ -20,7 +20,7 @@ After cloning and navigating to the target folder, running the following command
 poetry install
 ```
 
-In-project virtual environment setup is controlled by *poetry.toml*. Default dependencies are not enough e.g. to run the unit tests as the library pytest is required for that and it is only included in the optional `dev` dependency group which can be installed by adding `--with dev` to the above installation command.
+In-project virtual environment setup is controlled by *poetry.toml*. Default dependencies are not enough to run the unit tests as pytest is required for that and it is only included in the optional `dev` dependency group which can be installed by adding `--with dev` to the above installation command.
 
 For the plotting to work correctly it might be required to set the backend for Matplotlib. One way to do this is to set the MPLBACKEND environment variable (overrides any matplotlibrc configuration) for the current shell.
 
@@ -94,4 +94,4 @@ Render the documentation as HTML with the following command
 poetry run sphinx-build -b html docs/source/ docs/build/html
 ```
 
-and open the starting page docs/build/html/index.html in a browser.
+and open the starting page `docs/build/html/index.html` in a browser.
