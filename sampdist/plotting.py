@@ -1,9 +1,21 @@
 """Implements plotting functionality."""
-from typing import Dict, Any
+from typing import Dict, Any, TypedDict, Optional
 
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.axes import Axes
+
+
+class PlotData(TypedDict):
+    b_stats: np.ndarray
+    se: float
+    ci: np.ndarray
+    actual_stat: float
+    alpha: int | float
+
+
+class PlotDataExtended(PlotData):
+    ci_perc: Optional[np.ndarray]
 
 
 class Plotting:
@@ -34,7 +46,7 @@ class Plotting:
         return np.percentile(data, [alpha_lower, alpha_upper])
 
     @staticmethod
-    def _generate_font_family() -> Dict[str, Dict[str, Any]]:
+    def _generate_font_family() -> Dict[str, Dict[str, int | str]]:
         return {
             "label_fonts": dict(fontsize=10, color="black", fontname="serif"),
             "header_fonts": dict(fontsize=12, color="black", fontname="sans-serif"),
@@ -91,7 +103,9 @@ class Plotting:
         )
 
     def _draw_histogram(
-        self, plot_data: Dict[str, Any], plot_config: Dict[str, Any], plot_comparison: bool
+        self,
+        plot_data: PlotDataExtended,
+        plot_config: Dict[str, int | str],
     ) -> None:
         fig, ax = plt.subplots(figsize=(8, 6))
         _ = ax.hist(plot_data["b_stats"], bins=plot_config["bins"], color="silver", alpha=0.75)
@@ -130,7 +144,8 @@ class Plotting:
                 font=fonts["bca_ci_data_fonts"],
             ),
         )
-        if plot_comparison:
+
+        if plot_data["ci_perc"] is not None:
             conf_perc = plot_data["ci_perc"]
             text = f"{alpha} perc ci [{conf_perc[0]:.2f},{conf_perc[1]:.2f}]"
 
@@ -139,8 +154,7 @@ class Plotting:
                 dict(x=1.20, y=0.80, text=text, font=fonts["perc_ci_data_fonts"]),
             )
             ax.axvline(x=obs_val, alpha=0.5, color="black", linestyle="--", linewidth=0.75)
-
-        if not plot_comparison:
+        else:
             # Only plot obs arrow when not plotting confidence interval comparison
             self._set_annotation(
                 ax, dict(text="obs", color="black", value=obs_val, arrow_direction="down")
@@ -152,7 +166,7 @@ class Plotting:
             self._set_annotation(
                 ax, dict(text=f"{alpha}", color="orangered", value=bca_value, arrow_direction="up")
             )
-            if plot_comparison:
+            if plot_data["ci_perc"] is not None:
                 perc_value = plot_data["ci_perc"][index]
                 self._set_annotation(
                     ax,
@@ -166,7 +180,10 @@ class Plotting:
         plt.close(fig)
 
     def plot_estimates(
-        self, plot_data: Dict[str, Any], plot_config: Dict[str, Any], plot_comparison: bool = False
+        self,
+        plot_data: PlotData,
+        plot_config: Dict[str, int | str],
+        plot_comparison: bool = False,
     ) -> None:
         """Plot bootstrap distribution as a histrogram with SE, observed value and BCa CIs.
 
@@ -179,12 +196,12 @@ class Plotting:
 
         Parameters
         ----------
-        plot_data : Dict[str, Any]
+        plot_data : PlotData dict
             Results of the estimation process completed in the sampling module.
-            Must contain keys `b_stats`, `se`, `ci` and `actual_stat` having
-            NumPy arrays as values and key `alpha` with a numerical value.
+            Must contain keys `b_stats` and `ci` having NumPy arrays as values and
+            keys `se`, `actual_stat` and `alpha` with a numerical value.
 
-        plot_config : Dict[str, Any]
+        plot_config : Dict[str, int | str]
             Settings for the histogram plot. Must contain key `bins` with a positive
             integer or string value. If integer, it must between one and the count
             of observations present in data. If string, it must be a name accepted
@@ -195,10 +212,11 @@ class Plotting:
             If True, naive percentile based confidence interval is included in the plot
             alongside the BCa CI. Otherwise and as the default case, it's not included.
         """
+        ci_perc = None
         if plot_comparison:
-            plot_data["ci_perc"] = self._compute_percentile_ci(
-                plot_data["b_stats"], plot_data["alpha"]
-            )
+            ci_perc = self._compute_percentile_ci(plot_data["b_stats"], plot_data["alpha"])
+
+        plot_data_ext: PlotDataExtended = {**plot_data, "ci_perc": ci_perc}
 
         with plt.style.context(self.style_sheet):
-            self._draw_histogram(plot_data, plot_config, plot_comparison)
+            self._draw_histogram(plot_data_ext, plot_config)

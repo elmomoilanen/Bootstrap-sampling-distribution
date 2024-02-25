@@ -5,7 +5,7 @@ import numpy as np
 from scipy.stats import norm  # type: ignore[import-untyped]
 
 from .errors import StatisticError, BcaError
-from .plotting import Plotting
+from .plotting import Plotting, PlotData
 
 
 class SampDist:
@@ -345,7 +345,7 @@ class SampDist:
         else:
             raise TypeError("Bins must be an integer or string describing the binning strategy")
 
-        plot_data = {
+        plot_data: PlotData = {
             "b_stats": self.b_stats if self.b_stats.ndim == 1 else self.b_stats[:, column],
             "se": self.se[column],
             "ci": self.ci[:, column],
