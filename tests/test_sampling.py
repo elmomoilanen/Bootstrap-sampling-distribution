@@ -1,4 +1,5 @@
 """Tests for `SampDist` class."""
+
 from math import isclose
 
 import numpy as np

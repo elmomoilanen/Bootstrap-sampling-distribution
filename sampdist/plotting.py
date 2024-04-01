@@ -1,4 +1,5 @@
 """Implements plotting functionality."""
+
 from typing import Dict, Any, TypedDict, Optional
 
 import numpy as np

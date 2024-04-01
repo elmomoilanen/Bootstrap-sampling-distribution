@@ -1,4 +1,5 @@
 """Tests for some statistical functions implemented in `statistics` module."""
+
 from math import isclose
 
 import numpy as np

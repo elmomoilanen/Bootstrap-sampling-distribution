@@ -39,6 +39,7 @@ must be called with an additional dimension inserted. E.g., for data X with shap
 n x 2 one must call the Pearson's correlation function by `corr_pearson(X[np.newaxis,:,:])`.
 This will insert one extra dimension to the front, e.g. n x 2 turns to 1 x n x 2.
 """
+
 from typing import Any, Callable
 import numpy as np
 

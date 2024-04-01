@@ -1,4 +1,5 @@
 """Tests for `Plotting` class."""
+
 from unittest.mock import patch, MagicMock
 
 import pytest

@@ -13,6 +13,7 @@ and `plot`.
 For convenience some common statistical functions have been implemented library
 compatibly in the `statistics` module.
 """
+
 from sampdist.errors import SampDistError
 from sampdist.sampling import SampDist
 

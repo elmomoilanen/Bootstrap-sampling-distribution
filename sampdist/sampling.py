@@ -1,4 +1,5 @@
 """Implements sampling distribution functionality."""
+
 from typing import Any, Optional, Union, Callable
 
 import numpy as np
