@@ -69,7 +69,7 @@ class SampDist:
     from the statistics module could also be used.
 
     >>> import numpy as np
-    >>> from sampdist import SampDist
+    >>> from bootstrap_sampling_distribution import SampDist
     >>> def quantile(x): return np.quantile(x, q=0.1, axis=1)
     >>> samp = SampDist(quantile, alpha=99, smooth_bootstrap=True)
     >>> samp.estimate(X[:, [0,2]]) # estimate sampling distribution for columns 0 and 2
@@ -82,8 +82,8 @@ class SampDist:
     is imported from the statistics module where it has been implemented to accept 3-d
     data as for input (SampDist requires extra dimension to be inserted in this case).
 
-    >>> from sampdist import SampDist
-    >>> from sampdist.statistics import corr_pearson
+    >>> from bootstrap_sampling_distribution import SampDist
+    >>> from bootstrap_sampling_distribution.statistics import corr_pearson
     >>> samp = SampDist(corr_pearson)
     >>> samp.estimate(X[:, :2], multid=True) # estimate sampling distribution for columns 0 and 1
     >>> samp.se, samp.ci # standard error and BCa confidence interval

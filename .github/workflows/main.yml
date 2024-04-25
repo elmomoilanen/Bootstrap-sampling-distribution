@@ -44,10 +44,8 @@ jobs:
       
     - name: Lint with flake8
       run: |
-        poetry run flake8 ./sampdist/* \
-          --count --select=E9,F63,F7,F82 --show-source --statistics
-        poetry run flake8 ./sampdist/* --max-line-length=100 \
-          --ignore=E501,F401 --max-complexity=10 --count --exit-zero
+        poetry run flake8 ./bootstrap_sampling_distribution/* --count --select=E9,F63,F7,F82 --show-source --statistics
+        poetry run flake8 ./bootstrap_sampling_distribution/* --max-line-length=100 --ignore=E501,F401 --max-complexity=10 --count --exit-zero
 
     - name: Check typing
       run: poetry run mypy .

@@ -1,7 +1,7 @@
-sampdist
-========
+Bootstrap-sampling-distribution
+================================
 
 .. toctree::
    :maxdepth: 4
 
-   sampdist
+   bootstrap_sampling_distribution

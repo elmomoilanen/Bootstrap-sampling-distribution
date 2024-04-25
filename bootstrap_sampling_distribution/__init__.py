@@ -1,6 +1,7 @@
-"""Quick guide to sampdist package.
+"""Quick guide to Bootstrap-sampling-distribution package.
 
-Package contains the following modules
+This package contains the following modules
+
 - errors
 - plotting
 - sampling
@@ -14,10 +15,10 @@ For convenience some common statistical functions have been implemented library
 compatibly in the `statistics` module.
 """
 
-from sampdist.errors import SampDistError
-from sampdist.sampling import SampDist
+from bootstrap_sampling_distribution.errors import SampDistError
+from bootstrap_sampling_distribution.sampling import SampDist
 
-from sampdist.statistics import (
+from bootstrap_sampling_distribution.statistics import (
     mean,
     geometric_mean,
     harmonic_mean,

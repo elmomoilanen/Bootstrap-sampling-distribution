@@ -2,7 +2,7 @@
 
 
 class SampDistError(Exception):
-    """Base class for `sampdist` package errors."""
+    """Base class for errors."""
 
 
 class StatisticError(SampDistError):

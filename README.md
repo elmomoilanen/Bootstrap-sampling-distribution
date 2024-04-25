@@ -40,7 +40,7 @@ First let's consider a case where we assume X to be a numerical data with shape 
 
 ```python
 import numpy as np
-from sampdist import SampDist
+from bootstrap_sampling_distribution import SampDist
 
 # One-dimensional statistics should be defined with axis=1
 def quantile(x): return np.quantile(x, q=0.1, axis=1)
@@ -69,10 +69,10 @@ The following figure represents a possible result of the plot call. In addition 
 For the second example, let's consider the estimation process of the sampling distribution for a multidimensional statistic, e.g. Pearson's linear correlation. Keeping the mentioned assumptions regarding data X, following code estimates the sampling distribution and in the final row of the snippet, renders a histogram plot similarly to the figure above. Compared to the previous example, notice the difference in estimation process of the chosen statistic. Here the multidimensional statistic, Pearson's correlation, requires two attributes (columns) of the data X as input (a data slice of shape n x 2) and produces a single output which is the value of correlation.
 
 ```python
-from sampdist import SampDist
+from bootstrap_sampling_distribution import SampDist
 
 # Import custom implementation of the Pearson's correlation
-from sampdist import corr_pearson
+from bootstrap_sampling_distribution import corr_pearson
 
 samp = SampDist(corr_pearson)
 
@@ -84,11 +84,11 @@ samp.plot()
 
 ![](docs/bootstrap_distribution_corr.png)
 
-Notice that the validity of the statistic is checked when calling the estimate method. If this check fails, a *StatisticError* exception will be raised. Furthermore, if the estimated sampling distribution is degenerate (e.g. data almost identical), a *BcaError* exception gets raised (in this case you may try to use True for the smooth_bootstrap parameter). Both exceptions inherit from class *SampDistError* which can be imported directly from the sampdist namespace.
+Notice that the validity of the statistic is checked when calling the estimate method. If this check fails, a *StatisticError* exception will be raised. Furthermore, if the estimated sampling distribution is degenerate (e.g. data almost identical), a *BcaError* exception gets raised (in this case you may try to use True for the smooth_bootstrap parameter). Both exceptions inherit from class *SampDistError* which can be imported directly from the bootstrap_sampling_distribution namespace.
 
 ## Docs ##
 
-Render the documentation as HTML with the following command
+Render the documentation as HTML files with the following command
 
 ```bash
 poetry run sphinx-build -b html docs/source/ docs/build/html

@@ -1,4 +1,4 @@
-"""Implements some commonly used statistics library compatibly.
+"""Implements some commonly used statistics.
 
 Implemented functions
 - mean

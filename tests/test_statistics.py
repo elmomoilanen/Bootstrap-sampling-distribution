@@ -6,7 +6,7 @@ import numpy as np
 import pytest
 from scipy.stats import pearsonr, spearmanr
 
-from sampdist import (
+from bootstrap_sampling_distribution import (
     trimmed_mean_factory,
     quantile_factory,
     corr_pearson,

@@ -5,9 +5,9 @@ from math import isclose
 import numpy as np
 import pytest
 
-from sampdist import SampDist
+from bootstrap_sampling_distribution import SampDist
 
-from sampdist import (
+from bootstrap_sampling_distribution import (
     mean,
     geometric_mean,
     harmonic_mean,
@@ -25,7 +25,7 @@ from sampdist import (
     corr_spearman,
 )
 
-from sampdist.errors import StatisticError, BcaError
+from bootstrap_sampling_distribution.errors import StatisticError, BcaError
 
 # all one dimensional statistics except those behind factory function
 all_one_dim_statistics = (

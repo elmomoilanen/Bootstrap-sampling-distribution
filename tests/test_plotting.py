@@ -5,7 +5,7 @@ from unittest.mock import patch, MagicMock
 import pytest
 import numpy as np
 
-from sampdist import plotting
+from bootstrap_sampling_distribution import plotting
 
 
 @pytest.fixture
@@ -37,7 +37,7 @@ def plot_config():
     }
 
 
-@patch("sampdist.plotting.plt", autospec=True)
+@patch("bootstrap_sampling_distribution.plotting.plt", autospec=True)
 def test_plot_estimates_without_comparison(mock_plt, plotter, plot_data, plot_config):
     mock_plt.subplots.return_value = (MagicMock(), MagicMock())
 
@@ -53,7 +53,7 @@ def test_plot_estimates_without_comparison(mock_plt, plotter, plot_data, plot_co
     assert plotter._set_annotation.call_count == 3
 
 
-@patch("sampdist.plotting.plt", autospec=True)
+@patch("bootstrap_sampling_distribution.plotting.plt", autospec=True)
 def test_plot_estimates_with_comparison(mock_plt, plotter, plot_data, plot_config):
     mock_plt.subplots.return_value = (MagicMock(), MagicMock())
 
