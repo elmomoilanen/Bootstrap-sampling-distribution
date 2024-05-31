@@ -14,13 +14,13 @@ At the moment, SciPy's API *stats.bootstrap* somewhat resembles this library but
 
 Poetry is the recommended tool for installation.
 
-After cloning and navigating to the target folder, running the following command creates a virtual environment within this project directory and installs the default dependencies inside it
+Run the following command to install default dependencies within an in-project virtual environment
 
 ```bash
 poetry install
 ```
 
-In-project virtual environment setup is controlled by *poetry.toml*. Default dependencies are not enough to run the unit tests as pytest is required for that and it is only included in the optional `dev` dependency group which can be installed by adding `--with dev` to the above installation command.
+In-project virtual environment setup is controlled by *poetry.toml*. Default dependencies are not enough to run the unit tests as pytest is required for that and it is only included in the optional `dev` dependency group which can be installed by adding `--with dev` to the command above.
 
 For the plotting to work correctly it might be required to set the backend for Matplotlib. One way to do this is to set the MPLBACKEND environment variable (overrides any matplotlibrc configuration) for the current shell.
 
