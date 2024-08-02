@@ -169,7 +169,7 @@ class SampDist:
         # Quick and dirty validity test
         try:
             self.statistic(test_array)
-        except (np.AxisError, IndexError):
+        except (np.exceptions.AxisError, IndexError):
             # Test resulted in one of accepted errors
             # 1 dim: axis 1 is out of bounds for array of dimension 1
             # multid: too many indices for array: array is 2-dimensional, but 3 were indexed
