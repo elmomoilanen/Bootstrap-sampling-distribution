@@ -64,7 +64,7 @@ def test_setting_not_callable_statistic():
     not_callable_func = None
 
     with pytest.raises(TypeError, match=r"Statistic must be callable"):
-        samp = SampDist(not_callable_func)
+        SampDist(not_callable_func)
 
 
 def test_setting_alpha_property():
@@ -80,7 +80,7 @@ def test_setting_not_numeric_alpha():
     not_valid_alpha = "90"
 
     with pytest.raises(TypeError, match=r"Alpha must be an integer or float"):
-        samp = SampDist(median, alpha=not_valid_alpha)
+        SampDist(median, alpha=not_valid_alpha)
 
 
 def test_setting_not_within_bounds_alpha():
@@ -88,7 +88,7 @@ def test_setting_not_within_bounds_alpha():
 
     for alpha in not_valid_alpha_values:
         with pytest.raises(ValueError, match=r"Alpha must be within.*"):
-            samp = SampDist(median, alpha=alpha)
+            SampDist(median, alpha=alpha)
 
 
 def test_statistic_validity_check_one_dim_statistics():
